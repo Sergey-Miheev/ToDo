@@ -8,7 +8,6 @@
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.Toolbar
-
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,59 +32,62 @@
         app:layout_constraintTop_toTopOf="@id/toolbar"
         android:contentDescription="@string/remindersIcon" />
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="wrap_content"
         android:layout_height="43dp"
         android:layout_centerHorizontal="true"
         android:layout_marginHorizontal="10dp"
         android:layout_marginVertical="10dp"
         android:background="@drawable/bg_switch"
+        android:padding="2.5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        android:padding="2.5dp">
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switchOnOff"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp"
             android:checked="true"
             android:textColor="@color/white"
             android:thumb="@drawable/thumb_selector"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:switchMinWidth="140dp"
             app:track="@drawable/track_selector" />
 
-        <LinearLayout
-            android:layout_width="180dp"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:weightSum="2">
+        <TextView
+            android:id="@+id/tvSwitchYes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:gravity="center"
+            android:text="@string/schedule"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvSwitchYes"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Schedule"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
+        <TextView
+            android:id="@+id/tvSwitchNo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/note"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/tvSwitchYes"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvSwitchNo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Note"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-        </LinearLayout>
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
@@ -96,5 +98,7 @@
         app:backgroundTint="@color/noteBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="20dp"
         />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
