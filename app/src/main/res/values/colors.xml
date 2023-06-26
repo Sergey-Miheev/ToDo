@@ -10,4 +10,6 @@
     <color name="switchBackground">#3C1F7B</color>
     <color name="switchActiveButton">#272430</color>
     <color name="noteBackground">#7E64FF</color>
+    <color name="searchNoteBg">#CCC2FE</color>
+    <color name="searchNoteHint">#828282</color>
 </resources>

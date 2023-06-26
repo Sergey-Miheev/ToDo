@@ -15,29 +15,28 @@
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/Theme.ToDo"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/main_menu"
         app:title="on.time"
-        app:titleTextColor="@color/white"
-        app:menu="@menu/main_menu" >
+        app:titleTextColor="@color/white">
+
+        <ImageView
+            android:id="@+id/toolbar_remindersIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/remindersIcon"
+            android:src="@drawable/bell"
+            app:layout_constraintRight_toRightOf="@id/toolbar"
+             />
     </androidx.appcompat.widget.Toolbar>
 
-    <ImageView
-        android:id="@+id/toolbar_remindersIcon"
-        android:layout_height="40dp"
-        android:layout_width="wrap_content"
-        android:src="@drawable/bell"
-        android:layout_marginEnd="40dp"
-        android:layout_marginTop="7dp"
-        app:layout_constraintRight_toRightOf="@id/toolbar"
-        app:layout_constraintTop_toTopOf="@id/toolbar"
-        android:contentDescription="@string/remindersIcon" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/relativeLayout"
+        android:id="@+id/switchLayout"
         android:layout_width="wrap_content"
-        android:layout_height="43dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginHorizontal="10dp"
+        android:layout_height="0dp"
         android:layout_marginVertical="10dp"
         android:background="@drawable/bg_switch"
         android:padding="2.5dp"
@@ -46,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switchOnOff"
+            android:id="@+id/switchButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="3dp"
@@ -57,18 +56,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:switchMinWidth="140dp"
+            app:switchMinWidth="120dp"
             app:track="@drawable/track_selector" />
 
         <TextView
             android:id="@+id/tvSwitchYes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="29dp"
             android:gravity="center"
             android:text="@string/schedule"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -77,10 +76,11 @@
             android:id="@+id/tvSwitchNo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="29dp"
             android:gravity="center"
             android:text="@string/note"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/tvSwitchYes"
             app:layout_constraintRight_toRightOf="parent"
@@ -88,15 +88,51 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchNoteView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/switchLayout"
+        android:layout_margin="15dp"
+        app:queryHint="Search Note"
+        app:iconifiedByDefault="false"
+        app:searchIcon="@drawable/search_icon"
+        android:background="@drawable/search_note_view_bg"
+        />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/recyclerContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchNoteView">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/notesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="20dp"
         android:contentDescription="@string/addNoteButton"
         android:src="@drawable/add"
         app:backgroundTint="@color/noteBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:layout_margin="20dp"
-        />
+        app:maxImageSize="23dp"
+        app:tint="@color/white"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,8 +8,8 @@
             <solid android:color="@color/switchActiveButton" />
             <corners android:radius="3dp" />
             <size
-                android:width="90dp"
-                android:height="36dp" />
+                android:width="140dp"
+                android:height="44dp" />
         </shape>
 
     </item>
