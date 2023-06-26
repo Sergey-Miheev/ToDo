@@ -43,6 +43,8 @@ class NoteAdapter(inputNotesList: ArrayList<Note>)
                     val resultList = ArrayList<Note>()
                     for (note in notesList) {
                         if (note.description.lowercase(Locale.ROOT)
+                                .contains(searchString.lowercase(Locale.ROOT))
+                            || note.title.lowercase(Locale.ROOT)
                                 .contains(searchString.lowercase(Locale.ROOT))) {
                             resultList.add(note)
                         }

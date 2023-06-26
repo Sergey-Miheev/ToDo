@@ -12,12 +12,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
     private var notesRecyclerView: RecyclerView? = null
     private lateinit var notesList: ArrayList<Note>
     private lateinit var noteAdapter: NoteAdapter
     private lateinit var noteSearchView: SearchView
+    private lateinit var addNoteButton: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS )
         supportActionBar?.hide()
 
-        // иницилизация фильтра заметок - SearchView
+        // получение вьюшки фильтра заметок - SearchView
         noteSearchView = findViewById(R.id.searchNoteView)
         // меняем цвет иконки удаления введённого текста
         val cancelIcon = noteSearchView.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
@@ -71,6 +73,14 @@ class MainActivity : AppCompatActivity() {
         noteAdapter.onItemClick = {
             val intent: Intent = Intent(this, NoteEdit::class.java)
             intent.putExtra(Note::class.java.simpleName , it)
+            startActivity(intent)
+        }
+
+        // при нажатии на кнопку добавления, переходим на экран редактирования
+        // заметки(но не передаём данные, так как это новая заметка)
+        addNoteButton = findViewById(R.id.addNoteButton)
+        addNoteButton.setOnClickListener {
+            val intent: Intent = Intent(this, NoteEdit::class.java)
             startActivity(intent)
         }
     }

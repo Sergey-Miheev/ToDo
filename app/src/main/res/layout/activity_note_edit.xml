@@ -54,7 +54,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:autofillHints=""
+            android:importantForAutofill="no"
+            tools:targetApi="o"
             tools:ignore="LabelFor" />
 
         <EditText
@@ -69,10 +70,9 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_note_title"
-            android:autofillHints=""
+            android:importantForAutofill="no"
+            tools:targetApi="o"
             tools:ignore="LabelFor" />
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
