@@ -123,17 +123,15 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addNoteButton"
+    <com.leinardi.android.speeddial.SpeedDialView
+        android:id="@+id/speedDial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:contentDescription="@string/addNoteButton"
-        android:src="@drawable/add"
         app:backgroundTint="@color/noteBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:maxImageSize="23dp"
-        app:tint="@color/white"/>
+        app:sdMainFabClosedSrc="@drawable/add"
+        app:sdMainFabClosedBackgroundColor="@color/noteBackground"
+        app:sdMainFabOpenedBackgroundColor="@color/noteBackground"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

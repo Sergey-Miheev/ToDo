@@ -7,7 +7,9 @@
     <string name="addNoteButton">addNote</string>
     <string name="schedule">Schedule</string>
     <string name="note">Note</string>
-    <string name="noteTitle">Введите заголовок</string>
-    <string name="noteDescription">Введите содержимое</string>
-    <string name="noteDate">Введите дату</string>
+    <string name="noteTitle">Title</string>
+    <string name="noteDescription">Your text</string>
+    <string name="noteDate">Date</string>
+    <item name="fab_schedule_icon" type="id" />
+    <item name="fab_note_icon" type="id" />
 </resources>

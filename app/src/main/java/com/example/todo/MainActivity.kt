@@ -13,14 +13,16 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.leinardi.android.speeddial.SpeedDialActionItem
+import com.leinardi.android.speeddial.SpeedDialView
 
 class MainActivity : AppCompatActivity() {
     private var notesRecyclerView: RecyclerView? = null
     private lateinit var notesList: ArrayList<Note>
     private lateinit var noteAdapter: NoteAdapter
     private lateinit var noteSearchView: SearchView
-    private lateinit var addNoteButton: FloatingActionButton
 
+    @SuppressLint("CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -76,13 +78,42 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // при нажатии на кнопку добавления, переходим на экран редактирования
-        // заметки(но не передаём данные, так как это новая заметка)
-        addNoteButton = findViewById(R.id.addNoteButton)
-        addNoteButton.setOnClickListener {
-            val intent: Intent = Intent(this, NoteEdit::class.java)
-            startActivity(intent)
-        }
+        // добавляем кнопку перехода на экран создания напоминания
+        val fabView = findViewById<SpeedDialView>(R.id.speedDial)
+        fabView.addActionItem(
+            SpeedDialActionItem.Builder(R.id.fab_schedule_icon, R.drawable.calendar_icon)
+                .create()
+        )
+
+        // добавляем кнопку перехода на экран создания заметки
+        fabView.addActionItem(
+            SpeedDialActionItem.Builder(R.id.fab_note_icon, R.drawable.note_icon)
+                .create()
+        )
+
+        // обработчик клика на кнопку создания напоминания
+        fabView.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
+            when (actionItem.id) {
+                R.id.fab_schedule_icon -> {
+                    fabView.close() // To close the Speed Dial with animation
+                    return@OnActionSelectedListener true // false will close it without animation
+                }
+            }
+            false
+        })
+
+        // обработчик клика на кнопку создания заметки
+        fabView.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
+            when (actionItem.id) {
+                R.id.fab_note_icon -> {
+                    val intent: Intent = Intent(this, NoteEdit::class.java)
+                    startActivity(intent)
+                    fabView.close() // To close the Speed Dial with animation
+                    return@OnActionSelectedListener true // false will close it without animation
+                }
+            }
+            false
+        })
     }
 
     @SuppressLint("ResourceType")
