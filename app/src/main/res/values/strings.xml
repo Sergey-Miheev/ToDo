@@ -10,6 +10,8 @@
     <string name="noteTitle">Title</string>
     <string name="noteDescription">Your text</string>
     <string name="noteDate">Date</string>
-    <item name="fab_schedule_icon" type="id" />
-    <item name="fab_note_icon" type="id" />
+    <item name="note_fab_schedule_icon" type="id" />
+    <item name="note_fab_note_icon" type="id" />
+    <item name="schedule_fab_schedule_icon" type="id" />
+    <item name="schedule_fab_note_icon" type="id" />
 </resources>
