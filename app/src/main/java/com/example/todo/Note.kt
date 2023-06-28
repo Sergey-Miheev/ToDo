@@ -1,16 +1,14 @@
 package com.example.todo
 
 import java.io.Serializable
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 // Класс заметка, содержит заголовок, описание и дату создания
-class Note(description: String, title: String): Serializable {
+//@Parcelize
+class Note(title: String, description: String, date: String): Serializable {
 
-    private fun getCurrentDate(): String {
-        return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date())
-    }
+    /*private fun getCurrentDate(date: Date): String {
+        return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date)
+    }*/
 
     var title: String = title
         set(value) {
@@ -19,7 +17,10 @@ class Note(description: String, title: String): Serializable {
         get() {
             return field
         }
-    var date: String = getCurrentDate()
+    var date: String = date
+        set(value) {
+            field = value
+        }
         get() {
             return field
         }
