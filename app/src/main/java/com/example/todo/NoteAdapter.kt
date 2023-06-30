@@ -5,14 +5,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
+import models.DateConverter
+import models.NoteModel
 import java.util.Locale
 
-class NoteAdapter(inputNotesList: ArrayList<Note>)
+class NoteAdapter(inputNotesList: List<NoteModel>)
     : RecyclerView.Adapter<NoteViewHolder>(),Filterable   {
 
-    private var notesList: ArrayList<Note> = inputNotesList
-    private var notesFilteredList: ArrayList<Note> = inputNotesList
-    var onItemClick: ((Note) -> Unit)? = null
+    private var notesList: List<NoteModel> = inputNotesList
+    private var notesFilteredList: ArrayList<NoteModel> = ArrayList(inputNotesList)
+    var onItemClick: ((NoteModel) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
         return NoteViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.note_item, parent, false))
@@ -23,11 +25,13 @@ class NoteAdapter(inputNotesList: ArrayList<Note>)
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {
-        val note: Note = notesFilteredList[position]
+        val note: NoteModel = notesFilteredList[position]
 
         holder.title.text = note.title
         holder.description.text = note.description
-        holder.date.text = note.date
+
+        val converter: DateConverter = DateConverter()
+        holder.date.text = converter.toString(note.date)
 
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(note)
@@ -40,7 +44,7 @@ class NoteAdapter(inputNotesList: ArrayList<Note>)
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val searchString: String = constraint.toString()
                 if (searchString.isNotEmpty()) {
-                    val resultList = ArrayList<Note>()
+                    val resultList = ArrayList<NoteModel>()
                     for (note in notesList) {
                         if (note.description.lowercase(Locale.ROOT)
                                 .contains(searchString.lowercase(Locale.ROOT))
@@ -51,7 +55,7 @@ class NoteAdapter(inputNotesList: ArrayList<Note>)
                     }
                     notesFilteredList = resultList
                 } else {
-                    notesFilteredList = notesList
+                    notesFilteredList = ArrayList(notesList)
                 }
                 val filterResult = FilterResults()
                 filterResult.values = notesFilteredList
@@ -61,7 +65,7 @@ class NoteAdapter(inputNotesList: ArrayList<Note>)
             @Suppress("UNCHECKED_CAST")
             @SuppressLint("NotifyDataSetChanged")
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                notesFilteredList = results?.values as ArrayList<Note>
+                notesFilteredList = results?.values as ArrayList<NoteModel>
                 notifyDataSetChanged()
             }
         }

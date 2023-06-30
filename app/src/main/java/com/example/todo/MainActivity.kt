@@ -10,20 +10,17 @@ import android.view.WindowManager
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.databinding.ActivityMainBinding
 import com.leinardi.android.speeddial.SpeedDialActionItem
 import com.leinardi.android.speeddial.SpeedDialView
-import java.text.SimpleDateFormat
-import java.util.Locale
-
+import models.NoteModel
 
 class MainActivity : AppCompatActivity() {
     private var notesRecyclerView: RecyclerView? = null
-    private lateinit var notesList: ArrayList<Note>
+    private lateinit var notesList: List<NoteModel>
     private lateinit var noteAdapter: NoteAdapter
     private lateinit var noteSearchView: SearchView
     private lateinit var binding: ActivityMainBinding
@@ -58,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             when (actionItem.id) {
                 R.id.note_fab_note_icon -> {
                     val intent: Intent = Intent(this, NoteEdit::class.java)
+                    intent.putExtra("noteId", 0)
                     startActivity(intent)
                     fabView.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation
@@ -68,27 +66,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getNotesList() {
-        notesList = ArrayList()
 
         val db = MainDb.getDb(this)
-        db.getDao().getAllNotes().asLiveData().observe(this) {
-            notesList.clear()
-            for (note in it) {
-                notesList.add(
-                    Note(
-                        note.title,
-                        note.description,
-                        SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(note.date)
-                    )
-                )
-            }
+        db.getNoteDao().getAllNotes().asLiveData().observe(this) { dbNotesList ->
+            notesList = dbNotesList
+
             noteAdapter = NoteAdapter(notesList)
             notesRecyclerView?.adapter = noteAdapter
 
             // при нажатии на заметку, переходим на экран редактирования заметки
-            noteAdapter.onItemClick = {
+            noteAdapter.onItemClick = {noteItem ->
                 val intent: Intent = Intent(this, NoteEdit::class.java)
-                intent.putExtra(Note::class.java.simpleName, it)
+                intent.putExtra("noteId", noteItem.id)
                 startActivity(intent)
             }
         }
@@ -126,7 +115,7 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        val switchButton: SwitchCompat = findViewById(R.id.switchButton)
+        /*val switchButton: SwitchCompat = findViewById(R.id.switchButton)
 
         switchButton.setOnCheckedChangeListener { _, isChecked: Boolean ->
             if (isChecked) {
@@ -136,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                 val intent: Intent = Intent(this, ScheduleActivity::class.java)
                 startActivity(intent)
             }
-        }
+        }*/
 
         // иницилизация списка заметок - RecyclerView
         notesRecyclerView = findViewById(R.id.notesRecyclerView)

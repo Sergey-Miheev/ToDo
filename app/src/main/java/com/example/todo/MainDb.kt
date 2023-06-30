@@ -12,7 +12,7 @@ import models.NoteModel
 @TypeConverters(DateConverter::class)
 abstract class MainDb: RoomDatabase() {
 
-    abstract fun getDao(): Dao
+    abstract fun getNoteDao(): NoteDao
 
     companion object{
         fun getDb(context: Context): MainDb{

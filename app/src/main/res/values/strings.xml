@@ -15,4 +15,6 @@
     <item name="note_fab_note_icon" type="id" />
     <item name="schedule_fab_schedule_icon" type="id" />
     <item name="schedule_fab_note_icon" type="id" />
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
