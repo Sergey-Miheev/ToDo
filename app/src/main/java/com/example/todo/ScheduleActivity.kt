@@ -40,7 +40,7 @@ class ScheduleActivity : AppCompatActivity() {
         fabView.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
             when (actionItem.id) {
                 R.id.schedule_fab_note_icon -> {
-                    val intent: Intent = Intent(this, NoteEdit::class.java)
+                    val intent: Intent = Intent(this, NoteActivity::class.java)
                     startActivity(intent)
                     fabView.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation

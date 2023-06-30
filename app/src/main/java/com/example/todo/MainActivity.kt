@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
         fabView.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
             when (actionItem.id) {
                 R.id.note_fab_note_icon -> {
-                    val intent: Intent = Intent(this, NoteEdit::class.java)
+                    val intent: Intent = Intent(this, NoteActivity::class.java)
                     intent.putExtra("noteId", 0)
                     startActivity(intent)
                     fabView.close() // To close the Speed Dial with animation
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
 
             // при нажатии на заметку, переходим на экран редактирования заметки
             noteAdapter.onItemClick = {noteItem ->
-                val intent: Intent = Intent(this, NoteEdit::class.java)
+                val intent: Intent = Intent(this, NoteActivity::class.java)
                 intent.putExtra("noteId", noteItem.id)
                 startActivity(intent)
             }
