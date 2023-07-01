@@ -1,10 +1,7 @@
 package com.example.todo
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.leinardi.android.speeddial.SpeedDialActionItem
-import com.leinardi.android.speeddial.SpeedDialView
 
 class ScheduleActivity : AppCompatActivity() {
 
@@ -12,7 +9,7 @@ class ScheduleActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule)
 
-        // добавляем кнопку перехода на экран создания напоминания
+        /*// добавляем кнопку перехода на экран создания напоминания
         val fabView = findViewById<SpeedDialView>(R.id.scheduleExpandedFAB)
         fabView.addActionItem(
             SpeedDialActionItem.Builder(R.id.schedule_fab_schedule_icon, R.drawable.calendar_icon)
@@ -47,7 +44,7 @@ class ScheduleActivity : AppCompatActivity() {
                 }
             }
             false
-        })
+        })*/
     }
 
 }

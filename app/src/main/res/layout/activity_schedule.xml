@@ -26,14 +26,12 @@
         app:layout_constraintTop_toBottomOf="@id/carcass_fragment"
         />
 
-    <com.leinardi.android.speeddial.SpeedDialView
-        android:id="@+id/scheduleExpandedFAB"
-        android:layout_width="wrap_content"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/expandedFAB_fragment"
+        android:name="com.example.todo.ExpandedFABFragment"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:backgroundTint="@color/noteBackground"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:sdMainFabClosedSrc="@drawable/add"
-        app:sdMainFabClosedBackgroundColor="@color/noteBackground"
-        app:sdMainFabOpenedBackgroundColor="@color/noteBackground"/>
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

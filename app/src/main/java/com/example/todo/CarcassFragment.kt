@@ -2,11 +2,11 @@ package com.example.todo
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SwitchCompat
+import androidx.fragment.app.Fragment
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,18 +39,31 @@ class CarcassFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_carcass, container, false)
         switchButton = view.findViewById(R.id.switchButton)
 
-        switchButton.setOnCheckedChangeListener { _, isChecked: Boolean ->
-            if (isChecked) {
-                val intent: Intent = Intent(context, MainActivity::class.java)
-                startActivity(intent)
-            } else {
-                val intent: Intent = Intent(context, ScheduleActivity::class.java)
-                startActivity(intent)
-            }
-        }
+        initSwitchButton()
 
         // Inflate the layout for this fragment
         return view
+    }
+
+    private fun initSwitchButton() {
+        var isNotesActivity: Boolean? = activity?.intent?.extras?.getBoolean("isNotes")
+        if (isNotesActivity == null) {
+            isNotesActivity = true
+        }
+        if (isNotesActivity == false) {
+            switchButton.isChecked = false
+        }
+        switchButton.setOnCheckedChangeListener { _, _: Boolean ->
+            if (isNotesActivity) {
+                val intent = Intent(context, ScheduleActivity::class.java)
+                intent.putExtra("isNotes", false)
+                startActivity(intent)
+            } else {
+                val intent = Intent(context, MainActivity::class.java)
+                intent.putExtra("isNotes", true)
+                startActivity(intent)
+            }
+        }
     }
 
     companion object {

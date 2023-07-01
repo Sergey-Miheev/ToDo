@@ -14,8 +14,6 @@ import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.databinding.ActivityMainBinding
-import com.leinardi.android.speeddial.SpeedDialActionItem
-import com.leinardi.android.speeddial.SpeedDialView
 import models.NoteModel
 
 class MainActivity : AppCompatActivity() {
@@ -25,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var noteSearchView: SearchView
     private lateinit var binding: ActivityMainBinding
 
-    private fun setsFAB() {
+    /*private fun setsFAB() {
         // добавляем кнопку перехода на экран создания напоминания
         val fabView = findViewById<SpeedDialView>(R.id.noteExpandedFAB)
         fabView.addActionItem(
@@ -63,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             }
             false
         })
-    }
+    }*/
 
     private fun getNotesList() {
 
@@ -76,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
             // при нажатии на заметку, переходим на экран редактирования заметки
             noteAdapter.onItemClick = {noteItem ->
-                val intent: Intent = Intent(this, NoteActivity::class.java)
+                val intent = Intent(this, NoteActivity::class.java)
                 intent.putExtra("noteId", noteItem.id)
                 startActivity(intent)
             }
@@ -134,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 
         getNotesList()
 
-        setsFAB()
+        //setsFAB()
     }
 
     @SuppressLint("ResourceType")
