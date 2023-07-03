@@ -12,4 +12,5 @@
     <color name="noteBackground">#7E64FF</color>
     <color name="searchNoteBg">#CCC2FE</color>
     <color name="searchNoteHint">#828282</color>
+    <color name="red">#ff4444</color>
 </resources>

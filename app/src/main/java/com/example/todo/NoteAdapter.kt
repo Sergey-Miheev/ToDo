@@ -9,11 +9,11 @@ import models.DateConverter
 import models.NoteModel
 import java.util.Locale
 
-class NoteAdapter(inputNotesList: List<NoteModel>)
+class NoteAdapter(inputNotesList: ArrayList<NoteModel>)
     : RecyclerView.Adapter<NoteViewHolder>(),Filterable   {
 
-    private var notesList: List<NoteModel> = inputNotesList
-    private var notesFilteredList: ArrayList<NoteModel> = ArrayList(inputNotesList)
+    private var notesList: ArrayList<NoteModel> = inputNotesList
+    private var notesFilteredList: ArrayList<NoteModel> = inputNotesList
     var onItemClick: ((NoteModel) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
@@ -30,7 +30,7 @@ class NoteAdapter(inputNotesList: List<NoteModel>)
         holder.title.text = note.title
         holder.description.text = note.description
 
-        val converter: DateConverter = DateConverter()
+        val converter = DateConverter()
         holder.date.text = converter.toString(note.date)
 
         holder.itemView.setOnClickListener {

@@ -5,13 +5,13 @@ import android.os.Bundle
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
-import com.example.todo.databinding.ActivityNoteEditBinding
+import com.example.todo.databinding.ActivityNoteBinding
 import models.NoteModel
 import java.util.Date
 
 class NoteActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityNoteEditBinding
+    private lateinit var binding: ActivityNoteBinding
     private var note: NoteModel = NoteModel(null, "", "", Date(), false)
     private lateinit var db: MainDb
     private fun initViews() {
@@ -40,7 +40,7 @@ class NoteActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityNoteEditBinding.inflate(layoutInflater)
+        binding = ActivityNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         db = MainDb.getDb(this)
@@ -57,9 +57,8 @@ class NoteActivity : AppCompatActivity() {
             Thread{
                 db.getNoteDao().insertNote(note)
             }.start()
-            val intent: Intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-
     }
 }

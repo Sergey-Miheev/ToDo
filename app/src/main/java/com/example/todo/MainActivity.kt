@@ -11,69 +11,33 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.asLiveData
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.Snackbar
 import models.NoteModel
+import java.util.Timer
+import kotlin.concurrent.timerTask
 
 class MainActivity : AppCompatActivity() {
     private var notesRecyclerView: RecyclerView? = null
-    private lateinit var notesList: List<NoteModel>
+    private lateinit var notesList: ArrayList<NoteModel>
     private lateinit var noteAdapter: NoteAdapter
     private lateinit var noteSearchView: SearchView
     private lateinit var binding: ActivityMainBinding
-
-    /*private fun setsFAB() {
-        // добавляем кнопку перехода на экран создания напоминания
-        val fabView = findViewById<SpeedDialView>(R.id.noteExpandedFAB)
-        fabView.addActionItem(
-            SpeedDialActionItem.Builder(R.id.note_fab_schedule_icon, R.drawable.calendar_icon)
-                .create()
-        )
-
-        // добавляем кнопку перехода на экран создания заметки
-        fabView.addActionItem(
-            SpeedDialActionItem.Builder(R.id.note_fab_note_icon, R.drawable.note_icon)
-                .create()
-        )
-
-        // обработчик клика на кнопку создания напоминания
-        fabView.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
-            when (actionItem.id) {
-                R.id.note_fab_schedule_icon -> {
-                    fabView.close() // To close the Speed Dial with animation
-                    return@OnActionSelectedListener true // false will close it without animation
-                }
-            }
-            false
-        })
-
-        // обработчик клика на кнопку создания заметки
-        fabView.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
-            when (actionItem.id) {
-                R.id.note_fab_note_icon -> {
-                    val intent: Intent = Intent(this, NoteActivity::class.java)
-                    intent.putExtra("noteId", 0)
-                    startActivity(intent)
-                    fabView.close() // To close the Speed Dial with animation
-                    return@OnActionSelectedListener true // false will close it without animation
-                }
-            }
-            false
-        })
-    }*/
+    private lateinit var dbDao: NoteDao
 
     private fun getNotesList() {
 
-        val db = MainDb.getDb(this)
-        db.getNoteDao().getAllNotes().asLiveData().observe(this) { dbNotesList ->
-            notesList = dbNotesList
+        dbDao.getAllNotes().asLiveData().observe(this) { dbNotesList ->
+            notesList = ArrayList(dbNotesList)
 
             noteAdapter = NoteAdapter(notesList)
             notesRecyclerView?.adapter = noteAdapter
 
             // при нажатии на заметку, переходим на экран редактирования заметки
-            noteAdapter.onItemClick = {noteItem ->
+            noteAdapter.onItemClick = { noteItem ->
                 val intent = Intent(this, NoteActivity::class.java)
                 intent.putExtra("noteId", noteItem.id)
                 startActivity(intent)
@@ -81,12 +45,85 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setDeleteNoteBySwipe() {
+        var noteIsDeleted: Boolean
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                // this method is called
+                // when the item is moved.
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val durationUndoPossibility = 3000
+
+                // below line is to get the position
+                // of the item at that position.
+                val position = viewHolder.adapterPosition
+
+                // this method is called when we swipe our item to right direction.
+                // on below line we are getting the item at a particular position.
+                val deletedCourse: NoteModel =
+                    notesList[position]
+
+                // this method is called when item is swiped.
+                // below line is to remove item from our array list.
+                notesList.removeAt(position)
+
+                // below line is to notify our item is removed from adapter.
+                noteAdapter.notifyItemRemoved(position)
+
+                noteIsDeleted = true
+
+                // below line is to display our snack-bar with action.
+                Snackbar.make(
+                    notesRecyclerView!!,
+                    "Deleted " + deletedCourse.title,
+                    Snackbar.LENGTH_LONG
+                )
+                    .setDuration(durationUndoPossibility)
+                    .setAction(
+                        "Undo"
+                    ) {
+                        // adding on click listener to our action of snack bar.
+                        // below line is to add our item to array list with a position.
+                        notesList.add(position, deletedCourse)
+
+                        // below line is to notify item is
+                        // added to our adapter class.
+                        noteAdapter.notifyItemInserted(position)
+
+                        noteIsDeleted = false
+                    }.show()
+
+                Timer().schedule(timerTask {
+                    if (noteIsDeleted) {
+                        Thread {
+                            dbDao.deleteNote(notesList[position])
+                        }.start()
+                    }
+                }, durationUndoPossibility.toLong())
+            }
+
+            // at last we are adding this
+            // to our recycler view.
+        }).attachToRecyclerView(notesRecyclerView)
+
+    }
+
     @SuppressLint("CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS )
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
         supportActionBar?.hide()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -96,13 +133,14 @@ class MainActivity : AppCompatActivity() {
         // получение вьюшки фильтра заметок - SearchView
         noteSearchView = findViewById(R.id.searchNoteView)
         // меняем цвет иконки удаления введённого текста
-        val cancelIcon = noteSearchView.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
-        cancelIcon.setColorFilter(Color.rgb(79,79,79))
+        val cancelIcon =
+            noteSearchView.findViewById<ImageView>(androidx.appcompat.R.id.search_close_btn)
+        cancelIcon.setColorFilter(Color.rgb(79, 79, 79))
 
         // убираем фокусировку курсора на строке поиска(при открытии экрана)
         noteSearchView.clearFocus()
-        noteSearchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener,
-        android.widget.SearchView.OnQueryTextListener {
+        noteSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            android.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -113,26 +151,19 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        /*val switchButton: SwitchCompat = findViewById(R.id.switchButton)
-
-        switchButton.setOnCheckedChangeListener { _, isChecked: Boolean ->
-            if (isChecked) {
-                val intent: Intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-            } else {
-                val intent: Intent = Intent(this, ScheduleActivity::class.java)
-                startActivity(intent)
-            }
-        }*/
-
         // иницилизация списка заметок - RecyclerView
         notesRecyclerView = findViewById(R.id.notesRecyclerView)
         notesRecyclerView?.setHasFixedSize(true)
         notesRecyclerView?.layoutManager = LinearLayoutManager(this)
 
+        dbDao = MainDb.getDb(this).getNoteDao()
+
         getNotesList()
 
-        //setsFAB()
+        // on below line we are creating a method to create item touch helper
+        // method for adding swipe to delete functionality.
+        // in this we are specifying drag direction and position to right
+        setDeleteNoteBySwipe()
     }
 
     @SuppressLint("ResourceType")
