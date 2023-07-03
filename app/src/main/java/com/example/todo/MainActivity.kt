@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         dbDao.getAllNotes().asLiveData().observe(this) { dbNotesList ->
             notesList = ArrayList(dbNotesList)
 
-            noteAdapter = NoteAdapter(notesList)
+            noteAdapter = NoteAdapter(this, notesList)
             notesRecyclerView?.adapter = noteAdapter
 
             // при нажатии на заметку, переходим на экран редактирования заметки

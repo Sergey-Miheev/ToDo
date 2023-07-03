@@ -17,4 +17,6 @@ interface NoteDao {
     fun getAllNotes(): Flow<List<NoteModel>>
     @Query("SELECT * FROM note WHERE id = :noteId")
     fun getNoteById(noteId: Int): Flow<NoteModel>
+    @Query("SELECT * FROM note WHERE title LIKE '%' || :search  || '%' OR description LIKE '%' || :search  || '%'")
+    fun getFilteredNotes(search: String): List<NoteModel>
 }

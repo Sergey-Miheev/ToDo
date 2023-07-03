@@ -7,13 +7,13 @@ import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import models.DateConverter
 import models.NoteModel
-import java.util.Locale
 
-class NoteAdapter(inputNotesList: ArrayList<NoteModel>)
-    : RecyclerView.Adapter<NoteViewHolder>(),Filterable   {
+class NoteAdapter(context: MainActivity, inputNotesList: ArrayList<NoteModel>)
+    : RecyclerView.Adapter<NoteViewHolder>(), Filterable   {
 
     private var notesList: ArrayList<NoteModel> = inputNotesList
     private var notesFilteredList: ArrayList<NoteModel> = inputNotesList
+    private val dbDao: NoteDao = MainDb.getDb(context).getNoteDao()
     var onItemClick: ((NoteModel) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
@@ -44,16 +44,16 @@ class NoteAdapter(inputNotesList: ArrayList<NoteModel>)
             override fun performFiltering(constraint: CharSequence?): FilterResults {
                 val searchString: String = constraint.toString()
                 if (searchString.isNotEmpty()) {
-                    val resultList = ArrayList<NoteModel>()
-                    for (note in notesList) {
+                    notesFilteredList = dbDao.getFilteredNotes(searchString) as ArrayList<NoteModel>
+                    /*for (note in notesList) {
                         if (note.description.lowercase(Locale.ROOT)
                                 .contains(searchString.lowercase(Locale.ROOT))
                             || note.title.lowercase(Locale.ROOT)
                                 .contains(searchString.lowercase(Locale.ROOT))) {
                             resultList.add(note)
                         }
-                    }
-                    notesFilteredList = resultList
+                    }*/
+
                 } else {
                     notesFilteredList = ArrayList(notesList)
                 }
