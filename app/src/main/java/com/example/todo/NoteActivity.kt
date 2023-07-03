@@ -13,7 +13,7 @@ class NoteActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNoteBinding
     private var note: NoteModel = NoteModel(null, "", "", Date(), false)
-    private lateinit var db: MainDb
+    private lateinit var dbDao: NoteDao
     private fun initViews() {
         val arguments = intent.extras
 
@@ -25,15 +25,15 @@ class NoteActivity : AppCompatActivity() {
             descriptionView.setText("")
             titleView.setText("")
 
+            // зачем как live Data
             if (noteId > 0) {
-                db.getNoteDao().getNoteById(noteId).asLiveData().observe(this) {
+                dbDao.getNoteById(noteId).asLiveData().observe(this) {
                     note = it
 
                     descriptionView.setText(note.description)
                     titleView.setText(note.title)
                 }
             }
-            //note = arguments.getSerializable(Note::class.java.simpleName) as Note
         }
     }
 
@@ -43,20 +43,24 @@ class NoteActivity : AppCompatActivity() {
         binding = ActivityNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        db = MainDb.getDb(this)
+        dbDao = MainDb.getDb(this).getNoteDao()
 
         initViews()
 
         binding.saveNoteFab.setOnClickListener {
-            val note = NoteModel(null,
-                binding.editNoteTitle.text.toString(),
-                binding.editNoteDescription.text.toString(),
-                Date(),
-                false
-            )
-            Thread{
-                db.getNoteDao().insertNote(note)
-            }.start()
+            if (note.id != null) {
+                Thread{
+                    dbDao.updateNote(note)
+                }.start()
+            } else {
+                note.title = binding.editNoteTitle.text.toString()
+                note.description = binding.editNoteDescription.text.toString()
+                note.date = Date()
+                Thread{
+                    dbDao.insertNote(note)
+                }.start()
+            }
+
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }

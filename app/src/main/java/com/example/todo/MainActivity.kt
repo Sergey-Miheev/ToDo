@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
                 // this method is called when we swipe our item to right direction.
                 // on below line we are getting the item at a particular position.
-                val deletedCourse: NoteModel =
+                val deletedNote: NoteModel =
                     notesList[position]
 
                 // this method is called when item is swiped.
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                 // below line is to display our snack-bar with action.
                 Snackbar.make(
                     notesRecyclerView!!,
-                    "Deleted " + deletedCourse.title,
+                    "Deleted " + deletedNote.title,
                     Snackbar.LENGTH_LONG
                 )
                     .setDuration(durationUndoPossibility)
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         // adding on click listener to our action of snack bar.
                         // below line is to add our item to array list with a position.
-                        notesList.add(position, deletedCourse)
+                        notesList.add(position, deletedNote)
 
                         // below line is to notify item is
                         // added to our adapter class.
@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity() {
                 Timer().schedule(timerTask {
                     if (noteIsDeleted) {
                         Thread {
-                            dbDao.deleteNote(notesList[position])
+                            dbDao.deleteNote(deletedNote)
                         }.start()
                     }
                 }, durationUndoPossibility.toLong())
