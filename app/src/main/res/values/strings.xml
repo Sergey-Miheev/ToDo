@@ -17,4 +17,5 @@
     <item name="schedule_fab_note_icon" type="id" />
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="current_date">MONTH YEAR</string>
 </resources>

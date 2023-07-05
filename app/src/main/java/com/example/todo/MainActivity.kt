@@ -116,7 +116,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    @SuppressLint("CutPasteId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
