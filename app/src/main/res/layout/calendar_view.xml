@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/currentDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/current_date"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        android:paddingHorizontal="3dp"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/currentDate"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="12dp">
+
+        <GridLayout
+            android:id="@+id/daysField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:columnCount="7"
+            android:rowCount="7"
+            android:useDefaultMargins="false">
+
+            <TextView
+                android:id="@+id/sun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sun"
+                android:textSize="16sp"
+                android:textColor="@color/red"
+                android:paddingHorizontal="9dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="15dp"
+                android:textAlignment="center" />
+            <TextView
+                android:id="@+id/mon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mon"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:paddingHorizontal="9dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="15dp"
+                android:textAlignment="center" />
+            <TextView
+                android:id="@+id/tue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tue"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:padding="9dp"
+                android:textAlignment="center" />
+            <TextView
+                android:id="@+id/wed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wed"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:paddingHorizontal="9dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="15dp"
+                android:textAlignment="center" />
+            <TextView
+                android:id="@+id/thu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/thu"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:paddingHorizontal="9dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="15dp"
+                android:textAlignment="center" />
+            <TextView
+                android:id="@+id/fri"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fri"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:paddingHorizontal="9dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="15dp"
+                android:textAlignment="center" />
+            <TextView
+                android:id="@+id/sat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sat"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:paddingHorizontal="9dp"
+                android:paddingTop="9dp"
+                android:paddingBottom="15dp"
+                android:textAlignment="center" />
+
+        </GridLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
