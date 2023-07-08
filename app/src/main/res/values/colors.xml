@@ -11,7 +11,8 @@
     <color name="switchBackground">#3C1F7B</color>
     <color name="switchActiveButton">#272430</color>
     <color name="noteBackground">#7E64FF</color>
-    <color name="searchNoteBg">#CCC2FE</color>
-    <color name="searchNoteHint">#828282</color>
+    <color name="light_pink">#CCC2FE</color>
+    <color name="light_gray">#828282</color>
     <color name="red">#FF636C</color>
+    <color name="dark_gray">#4F4F4F</color>
 </resources>

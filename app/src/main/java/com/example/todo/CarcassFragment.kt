@@ -55,7 +55,7 @@ class CarcassFragment : Fragment() {
         }
         switchButton.setOnCheckedChangeListener { _, _: Boolean ->
             if (isNotesActivity) {
-                val intent = Intent(context, ScheduleActivity::class.java)
+                val intent = Intent(context, ScheduleListActivity::class.java)
                 intent.putExtra("isNotes", false)
                 startActivity(intent)
             } else {

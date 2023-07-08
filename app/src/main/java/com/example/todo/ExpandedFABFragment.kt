@@ -52,22 +52,17 @@ class ExpandedFABFragment : Fragment() {
                 .create()
         )
 
-        // обработчик клика на кнопку создания напоминания
-        fabView.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
-            when (actionItem.id) {
-                R.id.schedule_fab_schedule_icon -> {
-                    fabView.close() // To close the Speed Dial with animation
-                    return@OnActionSelectedListener true // false will close it without animation
-                }
-            }
-            false
-        })
-
-        // обработчик клика на кнопку создания заметки
+        // обработчик клика на кнопки создания заметки и напоминания
         fabView.setOnActionSelectedListener(SpeedDialView.OnActionSelectedListener { actionItem ->
             when (actionItem.id) {
                 R.id.schedule_fab_note_icon -> {
                     val intent = Intent(context, NoteActivity::class.java)
+                    startActivity(intent)
+                    fabView.close() // To close the Speed Dial with animation
+                    return@OnActionSelectedListener true // false will close it without animation
+                }
+                R.id.schedule_fab_schedule_icon -> {
+                    val intent = Intent(context, ScheduleActivity::class.java)
                     startActivity(intent)
                     fabView.close() // To close the Speed Dial with animation
                     return@OnActionSelectedListener true // false will close it without animation

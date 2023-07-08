@@ -52,7 +52,6 @@ class CalendarView : LinearLayout {
 
     private fun getCurrentDay(): Int {
         val calendar = Calendar.getInstance()
-        // Месяцы в Calendar начинаются с 0, поэтому добавляем 1
         return calendar.get(Calendar.DAY_OF_MONTH)
     }
 
@@ -143,11 +142,14 @@ class CalendarView : LinearLayout {
             i += 7
         }
 
-        // Устанавливаем бэкграунд для сегодняшнего дня
-        day = dateGrid.getChildAt(indexOfEndDayPrevMonth + currentDay) as TextView
-        day.setBackgroundResource(R.drawable.bg_circle)
-        dateGrid.removeViewAt(indexOfEndDayPrevMonth + currentDay)
-        dateGrid.addView(day, indexOfEndDayPrevMonth + currentDay)
+        if (selectedMonth == getCurrentMonth()
+            && selectedYear == getCurrentYear()) {
+            // Устанавливаем бэкграунд для сегодняшнего дня
+            day = dateGrid.getChildAt(indexOfEndDayPrevMonth + currentDay) as TextView
+            day.setBackgroundResource(R.drawable.bg_circle)
+            dateGrid.removeViewAt(indexOfEndDayPrevMonth + currentDay)
+            dateGrid.addView(day, indexOfEndDayPrevMonth + currentDay)
+        }
 
         dateGrid.setOnTouchListener(object : OnTouchListener {
             private val gestureDetector =
