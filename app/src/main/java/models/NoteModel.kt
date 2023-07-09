@@ -3,9 +3,11 @@ package models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import java.util.Date
 
 @Entity (tableName="note")
+@TypeConverters(DateConverter::class)
 data class NoteModel(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,

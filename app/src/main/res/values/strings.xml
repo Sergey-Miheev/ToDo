@@ -33,4 +33,20 @@
     <string name="reminder">Reminder</string>
     <string name="place">Place</string>
     <string name="notes">Notes</string>
+
+    <string-array name="repeat_items">
+        <item>Never</item>
+        <item>One time</item>
+        <item>Every 5 min</item>
+        <item>Every 30 min</item>
+        <item>Every hour</item>
+    </string-array>
+
+    <string-array name="reminder_items">
+        <item>No</item>
+        <item>Before 5 min</item>
+        <item>Before 30 min</item>
+        <item>Before 3 hour</item>
+        <item>Before day</item>
+    </string-array>
 </resources>

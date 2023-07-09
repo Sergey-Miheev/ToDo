@@ -4,12 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import models.DateConverter
 import models.NoteModel
+import models.ScheduleModel
 
-@Database (entities = [NoteModel::class], version = 1)
-@TypeConverters(DateConverter::class)
+@Database (entities = [NoteModel::class, ScheduleModel::class], version = 1)
 abstract class MainDb: RoomDatabase() {
 
     abstract fun getNoteDao(): NoteDao
