@@ -7,19 +7,20 @@ import androidx.room.RoomDatabase
 import models.NoteModel
 import models.ScheduleModel
 
-@Database (entities = [NoteModel::class, ScheduleModel::class], version = 1)
-abstract class MainDb: RoomDatabase() {
-
+@Database(entities = [NoteModel::class, ScheduleModel::class], version = 2)
+abstract class MainDb : RoomDatabase() {
     abstract fun getNoteDao(): NoteDao
+    abstract fun getScheduleDao(): ScheduleDao
 
-    companion object{
-        fun getDb(context: Context): MainDb{
+    companion object {
+        fun getDb(context: Context): MainDb {
             return Room.databaseBuilder(
                 context.applicationContext,
                 MainDb::class.java,
                 "ToDo.db"
-            ).build()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
         }
     }
-
 }

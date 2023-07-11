@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         // иницилизация списка заметок - RecyclerView
-        notesRecyclerView = findViewById(R.id.notesRecyclerView)
+        notesRecyclerView = binding.notesRecyclerView
         notesRecyclerView?.setHasFixedSize(true)
         notesRecyclerView?.layoutManager = LinearLayoutManager(this)
 

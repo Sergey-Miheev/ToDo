@@ -29,7 +29,7 @@
         app:queryHint="Search Note"
         app:iconifiedByDefault="false"
         app:searchIcon="@drawable/search_icon"
-        android:background="@drawable/search_note_view_bg"
+        android:background="@drawable/bg_search_note_view"
         />
 
     <androidx.constraintlayout.widget.ConstraintLayout

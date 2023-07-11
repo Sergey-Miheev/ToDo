@@ -13,7 +13,7 @@ class NoteActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNoteBinding
     private var note: NoteModel = NoteModel(null, "", "", Date(), false)
-    private lateinit var dbDao: NoteDao
+    private lateinit var noteDao: NoteDao
     private fun initViews() {
         val arguments = intent.extras
 
@@ -25,9 +25,8 @@ class NoteActivity : AppCompatActivity() {
             descriptionView.setText("")
             titleView.setText("")
 
-            // зачем как live Data
             if (noteId > 0) {
-                dbDao.getNoteById(noteId).asLiveData().observe(this) {
+                noteDao.getNoteById(noteId).asLiveData().observe(this) {
                     note = it
 
                     descriptionView.setText(note.description)
@@ -43,21 +42,21 @@ class NoteActivity : AppCompatActivity() {
         binding = ActivityNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        dbDao = MainDb.getDb(this).getNoteDao()
+        noteDao = MainDb.getDb(this).getNoteDao()
 
         initViews()
 
         binding.saveNoteFab.setOnClickListener {
             if (note.id != null) {
                 Thread{
-                    dbDao.updateNote(note)
+                    noteDao.updateNote(note)
                 }.start()
             } else {
                 note.title = binding.editNoteTitle.text.toString()
                 note.description = binding.editNoteDescription.text.toString()
                 note.date = Date()
                 Thread{
-                    dbDao.insertNote(note)
+                    noteDao.insertNote(note)
                 }.start()
             }
 

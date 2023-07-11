@@ -17,7 +17,7 @@ class NoteAdapter(context: MainActivity, inputNotesList: ArrayList<NoteModel>)
     var onItemClick: ((NoteModel) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
-        return NoteViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.note_item, parent, false))
+        return NoteViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.note_list_item, parent, false))
     }
 
     override fun getItemCount(): Int {

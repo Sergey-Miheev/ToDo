@@ -34,38 +34,26 @@ class CalendarView : LinearLayout {
     private lateinit var currentDateView: TextView
     private lateinit var dateGrid: GridLayout
     private lateinit var daysOfMonth: MutableList<Int>
+    fun getSelectedMonth(): String {
+        return monthShortNamesList[selectedMonth - 1]
+    }
+    fun getSelectedYear(): String {
+        return selectedYear.toString()
+    }
+    private val monthNamesList: Array<String> = resources.getStringArray(R.array.month_names)
+    private val monthShortNamesList: Array<String> = resources.getStringArray(R.array.month_short_names)
+    private var monthChangeListener: DataChangeListener? = null
 
-    private val monthNamesList: Array<String> = arrayOf(
-        "JANUARY",
-        "FEBRUARY",
-        "MARCH",
-        "APRIL",
-        "MAY",
-        "JUNE",
-        "JULY",
-        "AUGUST",
-        "SEPTEMBER",
-        "OCTOBER",
-        "NOVEMBER",
-        "DECEMBER"
-    )
-
-    private fun getCurrentDay(): Int {
-        val calendar = Calendar.getInstance()
-        return calendar.get(Calendar.DAY_OF_MONTH)
+    fun setMonthChangeListener(listener: DataChangeListener) {
+        monthChangeListener = listener
     }
 
-    private fun getCurrentMonth(): Int {
-        val calendar = Calendar.getInstance()
-        // Месяцы в Calendar начинаются с 0, поэтому добавляем 1
-        return calendar.get(Calendar.MONTH) + 1
+    fun removeMonthChangeListener() {
+        monthChangeListener = null
     }
-
-    private fun getCurrentYear(): Int {
-        val calendar = Calendar.getInstance()
-        return calendar.get(Calendar.YEAR)
+    fun notifyMonthChanged(month: String, year: String) {
+        monthChangeListener?.onDataChanged(month, year)
     }
-
     private fun init(context: Context) {
         this.context = context
         val rootView = inflate(context, R.layout.calendar_view, null)
@@ -78,13 +66,13 @@ class CalendarView : LinearLayout {
         day.text = dayNum.toString()
         day.textAlignment = TEXT_ALIGNMENT_CENTER
         day.gravity = Gravity.CENTER
-/*        day.setPadding(40, 30, 40, 30)*/
+        /*        day.setPadding(40, 30, 40, 30)*/
         day.setPadding(30, 30, 30, 30)
         day.paint.isFakeBoldText = true
         day.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16f)
 
         params.setGravity(Gravity.CENTER)
-        params.setMargins(10,0,10,0)
+        params.setMargins(10, 0, 10, 0)
     }
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
@@ -143,7 +131,8 @@ class CalendarView : LinearLayout {
         }
 
         if (selectedMonth == getCurrentMonth()
-            && selectedYear == getCurrentYear()) {
+            && selectedYear == getCurrentYear()
+        ) {
             // Устанавливаем бэкграунд для сегодняшнего дня
             day = dateGrid.getChildAt(indexOfEndDayPrevMonth + currentDay) as TextView
             day.setBackgroundResource(R.drawable.bg_circle)
@@ -210,6 +199,7 @@ class CalendarView : LinearLayout {
                                     selectedMonth += 1
                                 }
                             }
+                            notifyMonthChanged(monthShortNamesList[selectedMonth-1], selectedYear.toString())
                             fillCalendar(selectedYear, selectedMonth)
                         }
                         //}
@@ -225,7 +215,26 @@ class CalendarView : LinearLayout {
         })
     }
 
+    interface DataChangeListener {
+        fun onDataChanged(selectedMonth: String, selectedYear: String)
+    }
+
     companion object {
+        private fun getCurrentDay(): Int {
+            val calendar = Calendar.getInstance()
+            return calendar.get(Calendar.DAY_OF_MONTH)
+        }
+
+        private fun getCurrentMonth(): Int {
+            val calendar = Calendar.getInstance()
+            // Месяцы в Calendar начинаются с 0, поэтому добавляем 1
+            return calendar.get(Calendar.MONTH) + 1
+        }
+
+        private fun getCurrentYear(): Int {
+            val calendar = Calendar.getInstance()
+            return calendar.get(Calendar.YEAR)
+        }
         private fun isLeapYear(year: Int): Boolean =
             year % 4 == 0 && year % 100 != 0 || year % 400 == 0
 
@@ -271,13 +280,16 @@ class CalendarView : LinearLayout {
                     preMonthDayNum - 1
                 ).forEach { dates.add(preMonthDayCount - (preMonthDayNum - 1 - it)) }
                 // Дни текущего месяца
-                2 -> IntRange(0,
+                2 -> IntRange(
+                    0,
                     monthDayCount - 1
                 ).forEach { dates.add(it + 1) }
                 // Дни следующего месяца
-                3 -> IntRange(0,
+                3 -> IntRange(
+                    0,
                     nextMonthDayNum - 1
                 ).forEach { dates.add(it + 1) }
+
                 else -> dates.add(0)
             }
 
