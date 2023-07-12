@@ -59,6 +59,7 @@
             app:layout_constraintTop_toBottomOf="@id/scheduleCard_line"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="10dp"
             android:paddingBottom="10dp"
             android:columnCount="2"
             android:rowCount="3">

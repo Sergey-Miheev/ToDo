@@ -35,6 +35,21 @@
         android:textSize="16sp"
         android:text="@string/schedule"/>
 
+    <TextView
+        android:id="@+id/schuduleList_missingMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="14dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/scheduleList_header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/bg_missing_msg"
+        android:text="@string/schedules_isMissing_msg"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/scheduleListView"
         android:layout_width="0dp"

@@ -5,7 +5,7 @@
         <shape
             android:dither="true" android:shape="rectangle"
             android:useLevel="false" android:visible="true">
-            <solid android:color="@color/switchActiveButton" />
+            <solid android:color="@color/dark_lilac" />
             <corners android:radius="3dp" />
             <size
                 android:width="140dp"

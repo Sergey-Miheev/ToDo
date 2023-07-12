@@ -34,6 +34,7 @@
     <string name="place">Place</string>
     <string name="notes">Notes</string>
     <string name="time">Time</string>
+    <string name="schedules_isMissing_msg">You Didn’t Have Any Schedule.</string>
 
     <string-array name="repeat_items">
         <item>Never</item>

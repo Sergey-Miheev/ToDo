@@ -19,12 +19,12 @@ class CalendarView : LinearLayout {
 
     constructor(context: Context) : super(context) {
         init(context)
-        fillCalendar(selectedYear, selectedMonth)
+        fillCalendarWithMonth(selectedYear, selectedMonth)
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(context)
-        fillCalendar(selectedYear, selectedMonth)
+        fillCalendarWithMonth(selectedYear, selectedMonth)
     }
 
     private val currentDay = getCurrentDay()
@@ -34,16 +34,24 @@ class CalendarView : LinearLayout {
     private lateinit var currentDateView: TextView
     private lateinit var dateGrid: GridLayout
     private lateinit var daysOfMonth: MutableList<Int>
-    fun getSelectedMonth(): String {
+    fun getSelectedMonthAsStr(): String {
         return monthShortNamesList[selectedMonth - 1]
     }
-    fun getSelectedYear(): String {
+    fun getSelectedYearAsStr(): String {
         return selectedYear.toString()
+    }
+    fun getSelectedMonthAsInt(): Int {
+        return selectedMonth
+    }
+    fun getSelectedYearAsInt(): Int {
+        return selectedYear
     }
     private val monthNamesList: Array<String> = resources.getStringArray(R.array.month_names)
     private val monthShortNamesList: Array<String> = resources.getStringArray(R.array.month_short_names)
     private var monthChangeListener: DataChangeListener? = null
-
+    private val indexOfEndWeekDayNames = 6
+    private var indexOfCurrentDay = 0
+    private var calendarIsCollapsed = false
     fun setMonthChangeListener(listener: DataChangeListener) {
         monthChangeListener = listener
     }
@@ -58,8 +66,58 @@ class CalendarView : LinearLayout {
         this.context = context
         val rootView = inflate(context, R.layout.calendar_view, null)
         dateGrid = rootView.findViewById(R.id.daysField)
+        setupCalendarOnSwipe()
         currentDateView = rootView.findViewById(R.id.currentDate)
         this.addView(rootView)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun setupCalendarOnSwipe() {
+        dateGrid.setOnTouchListener(object : OnTouchListener {
+            val gestureDetector =
+                GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+                    override fun onFling(
+                        e1: MotionEvent,
+                        e2: MotionEvent,
+                        velocityX: Float,
+                        velocityY: Float
+                    ): Boolean {
+                        val deltaY = e2.y - e1.y
+                        val minMoving = 3
+                        val minSwipeSpeed = 3
+
+                        // для свайпа вниз и вверх
+                        if (abs(deltaY) > minMoving && abs(velocityY) > minSwipeSpeed) {
+                            dateGrid.removeViews(7, 42)
+                            if (deltaY > 0) {
+                                // Свайп вниз
+                                if (selectedMonth == 1) {
+                                    selectedYear -= 1
+                                    selectedMonth = 12
+                                } else {
+                                    selectedMonth -= 1
+                                }
+                            } else {
+                                // Свайп вверх
+                                if (selectedMonth == 12) {
+                                    selectedYear += 1
+                                    selectedMonth = 1
+                                } else {
+                                    selectedMonth += 1
+                                }
+                            }
+                            notifyMonthChanged(monthShortNamesList[selectedMonth-1], selectedYear.toString())
+                            fillCalendarWithMonth(selectedYear, selectedMonth)
+                        }
+                        return super.onFling(e1, e2, velocityX, velocityY)
+                    }
+                })
+
+            override fun onTouch(view: View, event: MotionEvent): Boolean {
+                gestureDetector.onTouchEvent(event)
+                return true
+            }
+        })
     }
 
     private fun setDayStyles(day: TextView, dayNum: Int, params: GridLayout.LayoutParams) {
@@ -75,15 +133,19 @@ class CalendarView : LinearLayout {
         params.setMargins(10, 0, 10, 0)
     }
 
-    @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
-    private fun fillCalendar(year: Int, month: Int) {
+    @SuppressLint("SetTextI18n")
+    fun fillCalendarWithMonth(year: Int, month: Int) {
         currentDateView.text = "${monthNamesList[month - 1]} $year"
         currentDateView.setTextColor(ContextCompat.getColor(context, R.color.white))
+
+        if (calendarIsCollapsed) {
+            dateGrid.removeViews(7, 7)
+            calendarIsCollapsed = false
+        }
 
         // Первый диапазон дней из предыдущего месяца, поэтому изначальный цвет чисел серый
         var isGray = true
         // Первые 7 ячеек заняты названиями дней недели
-        val indexOfEndWeekDayNames = 6
         var indexOfEndDayPrevMonth = indexOfEndWeekDayNames
         var indexOfFirstDayNextMonth = 0
         for (typeOfDays in 1..3) {
@@ -133,86 +195,40 @@ class CalendarView : LinearLayout {
         if (selectedMonth == getCurrentMonth()
             && selectedYear == getCurrentYear()
         ) {
+            indexOfCurrentDay = indexOfEndDayPrevMonth + currentDay
             // Устанавливаем бэкграунд для сегодняшнего дня
-            day = dateGrid.getChildAt(indexOfEndDayPrevMonth + currentDay) as TextView
+            day = dateGrid.getChildAt(indexOfCurrentDay) as TextView
             day.setBackgroundResource(R.drawable.bg_circle)
-            dateGrid.removeViewAt(indexOfEndDayPrevMonth + currentDay)
-            dateGrid.addView(day, indexOfEndDayPrevMonth + currentDay)
+            dateGrid.removeViewAt(indexOfCurrentDay)
+            dateGrid.addView(day, indexOfCurrentDay)
         }
+    }
 
-        dateGrid.setOnTouchListener(object : OnTouchListener {
-            private val gestureDetector =
-                GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-                    override fun onFling(
-                        e1: MotionEvent,
-                        e2: MotionEvent,
-                        velocityX: Float,
-                        velocityY: Float
-                    ): Boolean {
-                        // Определение направления свайпа
-                        //val deltaX = e2.x - e1.x
-                        val deltaY = e2.y - e1.y
-                        val minMoving = 3
-                        val minSwipeSpeed = 3
-
-                        // для свайпа направо и налево
-                        /*if (abs(deltaX) > abs(deltaY)) {
-                            if (abs(deltaX) > SWIPE_THRESHOLD && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                                dateGrid.removeViews(7,42)
-                                if (deltaX > 0) {
-                                    // свайп вправо
-                                    if (selectedMonth == 1) {
-                                        selectedYear -= 1
-                                        selectedMonth = 12
-                                    } else {
-                                        selectedMonth -= 1
-                                    }
-                                } else {
-                                    // Свайп влево
-                                    if (selectedMonth == 12) {
-                                        selectedYear += 1
-                                        selectedMonth = 1
-                                    } else {
-                                        selectedMonth += 1
-                                    }
-                                }
-                                fillCalendar(selectedYear, selectedMonth)
-                            }
-                        } else {*/
-                        // для свайпа вниз и вверх
-                        if (abs(deltaY) > minMoving && abs(velocityY) > minSwipeSpeed) {
-                            dateGrid.removeViews(7, 42)
-                            if (deltaY > 0) {
-                                // Свайп вниз
-                                if (selectedMonth == 1) {
-                                    selectedYear -= 1
-                                    selectedMonth = 12
-                                } else {
-                                    selectedMonth -= 1
-                                }
-                            } else {
-                                // Свайп вверх
-                                if (selectedMonth == 12) {
-                                    selectedYear += 1
-                                    selectedMonth = 1
-                                } else {
-                                    selectedMonth += 1
-                                }
-                            }
-                            notifyMonthChanged(monthShortNamesList[selectedMonth-1], selectedYear.toString())
-                            fillCalendar(selectedYear, selectedMonth)
-                        }
-                        //}
-
-                        return super.onFling(e1, e2, velocityX, velocityY)
-                    }
-                })
-
-            override fun onTouch(view: View, event: MotionEvent): Boolean {
-                gestureDetector.onTouchEvent(event)
-                return true
+    fun fillCalendarWithWeek() {
+        var indexOfFirstDayOfCurrWeek = 0
+        if (selectedMonth == getCurrentMonth() && selectedYear == getCurrentYear()) {
+            when(indexOfCurrentDay / 7) {
+                (0) -> indexOfFirstDayOfCurrWeek = 0
+                (1) -> indexOfFirstDayOfCurrWeek = 7
+                (2) -> indexOfFirstDayOfCurrWeek = 2*7
+                (3) -> indexOfFirstDayOfCurrWeek = 3*7
+                (4) -> indexOfFirstDayOfCurrWeek = 4*7
+                (5) -> indexOfFirstDayOfCurrWeek = 5*7
             }
-        })
+            if (indexOfFirstDayOfCurrWeek != 7) {
+                var indexOfDayInShortCalendar = 7
+                for (position: Int in indexOfFirstDayOfCurrWeek .. indexOfFirstDayOfCurrWeek+6) {
+                    val day = dateGrid.getChildAt(position) as TextView
+                    dateGrid.removeViewAt(position)
+                    dateGrid.removeViewAt(indexOfDayInShortCalendar)
+                    dateGrid.addView(day, indexOfDayInShortCalendar)
+                    dateGrid.addView(TextView(context), position)
+                    indexOfDayInShortCalendar++
+                }
+            }
+        }
+        dateGrid.removeViews(14, 35)
+        calendarIsCollapsed = true
     }
 
     interface DataChangeListener {
