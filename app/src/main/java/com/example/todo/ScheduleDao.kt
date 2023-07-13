@@ -16,6 +16,8 @@ interface ScheduleDao {
     fun deleteSchedule(schedule: ScheduleModel)
     @Update
     fun updateSchedule(schedule: ScheduleModel)
+    @Query("SELECT * FROM schedule WHERE id == :idSchedule")
+    fun getScheduleById(idSchedule: Int): Flow<ScheduleModel>
     @Query("SELECT * FROM schedule")
     fun getAllSchedules(): Flow<List<ScheduleModel>>
     @Query("SELECT * FROM schedule WHERE startDateTime LIKE '%' || :monthAndYear || '%'")

@@ -48,14 +48,14 @@ class NoteActivity : AppCompatActivity() {
 
         binding.saveNoteFab.setOnClickListener {
             if (note.id != null) {
-                Thread{
+                Thread {
                     noteDao.updateNote(note)
                 }.start()
             } else {
                 note.title = binding.editNoteTitle.text.toString()
                 note.description = binding.editNoteDescription.text.toString()
                 note.date = Date()
-                Thread{
+                Thread {
                     noteDao.insertNote(note)
                 }.start()
             }

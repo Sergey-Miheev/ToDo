@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.asLiveData
 import com.example.todo.databinding.ActivityScheduleBinding
 import models.ScheduleModel
 import java.text.SimpleDateFormat
@@ -32,10 +33,10 @@ class ScheduleActivity : AppCompatActivity() {
         return dateFormat.format(currentDate.time)
     }
 
-    private val schedule: ScheduleModel =
+    private var schedule: ScheduleModel =
         ScheduleModel(
-            null, "", false, false, getCurrentDateTime(),
-            getCurrentDateTime(), 0, 0, "", ""
+            null, "", isClosed = false, isFullday = false, startDateTime = getCurrentDateTime(),
+            finishDateTime = getCurrentDateTime(), repeat = 0, reminder = 0, place = "", notes = ""
         )
 
     private var dateTimePick: OnClickListener = OnClickListener { dateTimePickerView ->
@@ -104,9 +105,16 @@ class ScheduleActivity : AppCompatActivity() {
             schedule.reminder = binding.reminderSpinner.selectedItemPosition.toByte()
             schedule.place = binding.placeEdit.text.toString()
             schedule.notes = binding.descriptionEdit.text.toString()
-            Thread {
-                scheduleDao.insertSchedule(schedule)
-            }.start()
+            if (schedule.id == null) {
+                Thread {
+                    scheduleDao.insertSchedule(schedule)
+                }.start()
+            } else {
+                Thread {
+                    scheduleDao.updateSchedule(schedule)
+                }.start()
+            }
+
             val intent = Intent(this, ScheduleListActivity::class.java)
             startActivity(intent)
         }
@@ -120,18 +128,6 @@ class ScheduleActivity : AppCompatActivity() {
 
         scheduleDao = MainDb.getDb(this).getScheduleDao()
 
-        val formattedDateTime = getCurrentDateTime()
-
-        // устанавливаем текущую дату и время и добавляем возможность выбрать дату и время
-        val dateTimeOfStartPicker = binding.startFromPicker
-        dateTimeOfStartPicker.setText(formattedDateTime)
-        dateTimeOfStartPicker.setOnClickListener(dateTimePick)
-
-        // устанавливаем текущую дату и время и добавляем возможность выбрать дату и время
-        val dateTimeOfFinishPicker = binding.finishFromPicker
-        dateTimeOfFinishPicker.setText(formattedDateTime)
-        dateTimeOfFinishPicker.setOnClickListener(dateTimePick)
-
         val repeatSpinner = binding.repeatSpinner
         var spinnerItems = resources.getStringArray(R.array.repeat_items)
         setupSpinner(repeatSpinner, spinnerItems)
@@ -139,6 +135,35 @@ class ScheduleActivity : AppCompatActivity() {
         val reminderSpinner = binding.reminderSpinner
         spinnerItems = resources.getStringArray(R.array.reminder_items)
         setupSpinner(reminderSpinner, spinnerItems)
+
+        val arguments = intent.extras
+        if (arguments != null) {
+            val idSchedule = arguments.getInt("idSchedule")
+            scheduleDao.getScheduleById(idSchedule).asLiveData().observe(this) { scheduleFromDb ->
+                schedule = scheduleFromDb
+
+                binding.upbarCloseCheckBox.isChecked = schedule.isClosed
+                binding.titleName.setText(schedule.title)
+                binding.fulldaySwitch.isChecked = schedule.isFullday
+                binding.startFromPicker.setText(schedule.startDateTime)
+                binding.finishFromPicker.setText(schedule.finishDateTime)
+                binding.repeatSpinner.setSelection(schedule.repeat.toInt())
+                binding.reminderSpinner.setSelection(schedule.reminder.toInt())
+                binding.placeEdit.setText(schedule.place)
+                binding.descriptionEdit.setText(schedule.notes)
+            }
+        } else {
+            // устанавливаем текущую дату и время
+            val formattedDateTime = getCurrentDateTime()
+            binding.startFromPicker.setText(formattedDateTime)
+
+            binding.finishFromPicker.setText(formattedDateTime)
+
+        }
+        //добавляем возможность выбрать дату и время
+        binding.startFromPicker.setOnClickListener(dateTimePick)
+
+        binding.finishFromPicker.setOnClickListener(dateTimePick)
 
         setupCloseTickView()
     }

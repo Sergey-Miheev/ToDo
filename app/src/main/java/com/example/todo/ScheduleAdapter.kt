@@ -1,11 +1,13 @@
 package com.example.todo
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import models.ScheduleModel
 
-class ScheduleAdapter(inputSchedulesList: List<ScheduleModel>): RecyclerView.Adapter<ScheduleViewHolder>() {
+class ScheduleAdapter(private val context: Context,inputSchedulesList: List<ScheduleModel>): RecyclerView.Adapter<ScheduleViewHolder>() {
     private var schedulesList = ArrayList(inputSchedulesList)
     var onItemClick: ((ScheduleModel) -> Unit)? = null
 
@@ -30,9 +32,22 @@ class ScheduleAdapter(inputSchedulesList: List<ScheduleModel>): RecyclerView.Ada
             time += " - "
             time += schedule.finishDateTime.substring(17).lowercase()
         }
-        holder.time.text = time
-        holder.place.text = schedule.place
-        holder.notes.text = schedule.notes
+        holder.timeData.text = time
+        holder.placeData.text = schedule.place
+        holder.notesData.text = schedule.notes
+
+        if (schedule.isClosed) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.black_purple))
+            holder.title.setTextColor(ContextCompat.getColor(context, R.color.white_gray))
+            holder.line.setBackgroundColor(ContextCompat.getColor(context, R.color.black_lilac))
+            holder.timeData.setTextColor(ContextCompat.getColor(context, R.color.white_gray))
+            holder.placeData.setTextColor(ContextCompat.getColor(context, R.color.white_gray))
+            holder.notesData.setTextColor(ContextCompat.getColor(context, R.color.white_gray))
+            holder.timeHeader.setTextColor(ContextCompat.getColor(context, R.color.white_gray))
+            holder.placeHeader.setTextColor(ContextCompat.getColor(context, R.color.white_gray))
+            holder.notesHeader.setTextColor(ContextCompat.getColor(context, R.color.white_gray))
+        }
+
 
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(schedule)

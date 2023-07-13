@@ -1,5 +1,6 @@
 package com.example.todo
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -15,16 +16,39 @@ class ScheduleListActivity : AppCompatActivity() {
     private lateinit var schedulesListAdapter: ScheduleAdapter
     private lateinit var scheduleDao: ScheduleDao
     private lateinit var binding: ActivityScheduleListBinding
+    private var listIsCollapsed = true
+
+    private fun getDaysNumFromListSchedules(schedulesList: List<ScheduleModel>): List<Int> {
+        val numsOfList: ArrayList<Int> = ArrayList()
+        schedulesList.forEach {schedule ->
+            numsOfList.add(schedule.startDateTime.substring(5,7).toInt())
+        }
+
+        return numsOfList.toList()
+    }
     private fun getScheduleListFromDb(selectedMonth: String, selectedYear: String) {
         scheduleDao.getMonthSchedules("$selectedMonth $selectedYear").asLiveData()
             .observe(this@ScheduleListActivity) { dbSchedulesList ->
+                schedulesList = dbSchedulesList
+                schedulesListAdapter = ScheduleAdapter(this, schedulesList)
+                schedulesListAdapter.onItemClick = { scheduleItem ->
+                    val intent = Intent(this, ScheduleActivity::class.java)
+                    intent.putExtra("idSchedule", scheduleItem.id)
+                    startActivity(intent)
+                }
+                binding.calendarView.fillCalendarWithMonth(
+                    binding.calendarView.getSelectedYearAsInt(),
+                    binding.calendarView.getSelectedMonthAsInt(),
+                    getDaysNumFromListSchedules(schedulesList)
+                )
+
                 if (dbSchedulesList.isEmpty()) {
                     binding.schuduleListMissingMsg.visibility = View.VISIBLE
+                    binding.scheduleListView.visibility = View.GONE
                 } else {
                     binding.schuduleListMissingMsg.visibility = View.GONE
+                    binding.scheduleListView.visibility = View.VISIBLE
                 }
-                schedulesList = dbSchedulesList
-                schedulesListAdapter = ScheduleAdapter(schedulesList)
 
                 binding.scheduleListView.adapter = schedulesListAdapter
             }
@@ -38,10 +62,11 @@ class ScheduleListActivity : AppCompatActivity() {
         binding.calendarView.setMonthChangeListener(object : CalendarView.DataChangeListener {
             override fun onDataChanged(selectedMonth: String, selectedYear: String) {
                 getScheduleListFromDb(selectedMonth, selectedYear)
+
+                listIsCollapsed = true
             }
         })
 
-        var listIsCollapsed = true
         binding.scheduleListView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -69,6 +94,24 @@ class ScheduleListActivity : AppCompatActivity() {
                 }
             }
         })
+
+        /*ItemTouchHelper(object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val durationUndoPossibility = 3000
+
+                val position = viewHolder.adapterPosition
+
+                val deletedSchedule
+            }
+        })*/
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,7 +122,6 @@ class ScheduleListActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         scheduleDao = MainDb.getDb(this).getScheduleDao()
-        //binding.scheduleListView.setHasFixedSize(true)
         binding.scheduleListView.layoutManager = LinearLayoutManager(this)
 
         setupSchedulesRecyclerView()
