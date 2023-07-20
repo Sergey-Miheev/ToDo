@@ -1,11 +1,8 @@
 package com.example.todo
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -165,13 +162,5 @@ class MainActivity : AppCompatActivity() {
         setDeleteNoteBySwipe()
     }
 
-    @SuppressLint("ResourceType")
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return true
-    }
 }

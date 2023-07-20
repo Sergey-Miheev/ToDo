@@ -2,6 +2,7 @@ package com.example.todo
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,10 @@ class NoteAdapter(context: MainActivity, inputNotesList: ArrayList<NoteModel>)
         val converter = DateConverter()
         holder.date.text = converter.toString(note.date)
 
+        if (note.pinned) {
+            holder.pinnIcon.visibility = View.VISIBLE
+        }
+
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(note)
         }
@@ -45,15 +50,6 @@ class NoteAdapter(context: MainActivity, inputNotesList: ArrayList<NoteModel>)
                 val searchString: String = constraint.toString()
                 if (searchString.isNotEmpty()) {
                     notesFilteredList = dbDao.getFilteredNotes(searchString) as ArrayList<NoteModel>
-                    /*for (note in notesList) {
-                        if (note.description.lowercase(Locale.ROOT)
-                                .contains(searchString.lowercase(Locale.ROOT))
-                            || note.title.lowercase(Locale.ROOT)
-                                .contains(searchString.lowercase(Locale.ROOT))) {
-                            resultList.add(note)
-                        }
-                    }*/
-
                 } else {
                     notesFilteredList = ArrayList(notesList)
                 }

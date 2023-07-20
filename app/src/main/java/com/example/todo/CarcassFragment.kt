@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 
@@ -23,12 +24,41 @@ class CarcassFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var switchButton: SwitchCompat
+    private lateinit var toolbarMenu: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
+        }
+    }
+
+    private fun initSwitchButton() {
+        var switchIsCheked = false
+        val args = activity?.intent?.extras
+        if (args != null) {
+            switchIsCheked = args.getBoolean("isNotes")
+        }
+        switchButton.isChecked = switchIsCheked
+
+        switchButton.setOnClickListener {
+            if (switchIsCheked) {
+                val intent = Intent(context, ScheduleListActivity::class.java)
+                intent.putExtra("isNotes", false)
+                startActivity(intent)
+            } else {
+                val intent = Intent(context, MainActivity::class.java)
+                intent.putExtra("isNotes", true)
+                startActivity(intent)
+            }
+        }
+    }
+
+    private fun initToolbarMenu() {
+        toolbarMenu.setOnClickListener {
+            val intent = Intent(context, SettingsActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -41,29 +71,12 @@ class CarcassFragment : Fragment() {
 
         initSwitchButton()
 
+        toolbarMenu = view.findViewById(R.id.toolbar_menuIcon)
+
+        initToolbarMenu()
+
         // Inflate the layout for this fragment
         return view
-    }
-
-    private fun initSwitchButton() {
-        var isNotesActivity: Boolean? = activity?.intent?.extras?.getBoolean("isNotes")
-        if (isNotesActivity == null) {
-            isNotesActivity = true
-        }
-        if (isNotesActivity == false) {
-            switchButton.isChecked = false
-        }
-        switchButton.setOnCheckedChangeListener { _, _: Boolean ->
-            if (isNotesActivity) {
-                val intent = Intent(context, ScheduleListActivity::class.java)
-                intent.putExtra("isNotes", false)
-                startActivity(intent)
-            } else {
-                val intent = Intent(context, MainActivity::class.java)
-                intent.putExtra("isNotes", true)
-                startActivity(intent)
-            }
-        }
     }
 
     companion object {

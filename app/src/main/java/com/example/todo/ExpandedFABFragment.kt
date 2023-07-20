@@ -42,13 +42,13 @@ class ExpandedFABFragment : Fragment() {
 
         // добавляем кнопку перехода на экран создания напоминания
         fabView.addActionItem(
-            SpeedDialActionItem.Builder(R.id.schedule_fab_schedule_icon, R.drawable.calendar_icon)
+            SpeedDialActionItem.Builder(R.id.schedule_fab_schedule_icon, R.drawable.icon_calendar)
                 .create()
         )
 
         // добавляем кнопку перехода на экран создания заметки
         fabView.addActionItem(
-            SpeedDialActionItem.Builder(R.id.schedule_fab_note_icon, R.drawable.note_icon)
+            SpeedDialActionItem.Builder(R.id.schedule_fab_note_icon, R.drawable.icon_note)
                 .create()
         )
 

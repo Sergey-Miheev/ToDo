@@ -16,10 +16,10 @@ interface NoteDao {
     fun deleteNote(note: NoteModel)
     @Update
     fun updateNote(note: NoteModel)
-    @Query("SELECT * FROM note")
+    @Query("SELECT * FROM note ORDER BY pinned DESC, date DESC")
     fun getAllNotes(): Flow<List<NoteModel>>
     @Query("SELECT * FROM note WHERE id = :noteId")
     fun getNoteById(noteId: Int): Flow<NoteModel>
-    @Query("SELECT * FROM note WHERE title LIKE '%' || :search  || '%' OR description LIKE '%' || :search  || '%'")
+    @Query("SELECT * FROM note WHERE title LIKE '%' || :search  || '%' OR description LIKE '%' || :search  || '%' ORDER BY pinned DESC, date DESC")
     fun getFilteredNotes(search: String): List<NoteModel>
 }

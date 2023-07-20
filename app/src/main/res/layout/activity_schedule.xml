@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
+    android:background="@drawable/bg_gradient"
     android:theme="@style/Theme.ToDo"
     tools:context=".ScheduleActivity">
 
@@ -25,7 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:srcCompat="@drawable/tick_icon"
+            app:srcCompat="@drawable/icon_tick"
             android:background="@null"
             android:contentDescription="@string/finish_tick" />
 

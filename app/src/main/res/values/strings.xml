@@ -35,6 +35,14 @@
     <string name="notes">Notes</string>
     <string name="time">Time</string>
     <string name="schedules_isMissing_msg">You Didn’t Have Any Schedule.</string>
+    <string name="pinned_icon">pinned icon</string>
+    <string name="setting">Setting</string>
+    <string name="audio">Audio</string>
+    <string name="notification">Notification</string>
+    <string name="notification_bar">Notification Bar</string>
+    <string name="extras">Extras</string>
+    <string name="about">About</string>
+    <string name="help">Help</string>
 
     <string-array name="repeat_items">
         <item>Never</item>
@@ -51,7 +59,7 @@
         <item>Before 3 hour</item>
         <item>Before day</item>
     </string-array>
-    <string-array name="month_names">
+    <string-array name="month_names_en">
         <item>JANUARY</item>
         <item>FEBRUARY</item>
         <item>MARCH</item>
@@ -65,7 +73,7 @@
         <item>NOVEMBER</item>
         <item>DECEMBER</item>
     </string-array>
-    <string-array name="month_short_names">
+    <string-array name="month_short_names_en">
         <item>Jan</item>
         <item>Feb</item>
         <item>Mar</item>
@@ -78,5 +86,33 @@
         <item>Oct</item>
         <item>Nov</item>
         <item>Dec</item>
+    </string-array>
+    <string-array name="month_names_rus">
+        <item>ЯНВАРЬ</item>
+        <item>ФЕВРАЛЬ</item>
+        <item>МАРТ</item>
+        <item>АПРЕЛЬ</item>
+        <item>МАЙ</item>
+        <item>ИЮНЬ</item>
+        <item>ИЮЛЬ</item>
+        <item>АВГУСТ</item>
+        <item>СЕНТЯБРЬ</item>
+        <item>ОКТЯБРЬ</item>
+        <item>НОЯБРЬ</item>
+        <item>ДЕКАБРЬ</item>
+    </string-array>
+    <string-array name="month_short_names_rus">
+        <item>июл.</item>
+        <item>фев.</item>
+        <item>мар.</item>
+        <item>апр.</item>
+        <item>мая</item>
+        <item>июн.</item>
+        <item>июл.</item>
+        <item>авг.</item>
+        <item>сен.</item>
+        <item>окт.</item>
+        <item>ноя.</item>
+        <item>дек.</item>
     </string-array>
 </resources>

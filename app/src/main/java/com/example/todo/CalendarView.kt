@@ -19,12 +19,12 @@ class CalendarView : LinearLayout {
 
     constructor(context: Context) : super(context) {
         init(context)
-        //fillCalendarWithMonth(selectedYear, selectedMonth)
+        fillCalendarWithMonth(selectedYear, selectedMonth)
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         init(context)
-        //fillCalendarWithMonth(selectedYear, selectedMonth)
+        fillCalendarWithMonth(selectedYear, selectedMonth)
     }
 
     private val currentDay = getCurrentDay()
@@ -36,7 +36,7 @@ class CalendarView : LinearLayout {
     private lateinit var daysOfMonth: MutableList<Int>
     private var numsOfDaysWithScheduleList: List<Int> = listOf()
     fun getSelectedMonthAsStr(): String {
-        return monthShortNamesList[selectedMonth - 1]
+        return monthShortRusNamesList[selectedMonth - 1]
     }
     fun getSelectedYearAsStr(): String {
         return selectedYear.toString()
@@ -47,10 +47,13 @@ class CalendarView : LinearLayout {
     fun getSelectedYearAsInt(): Int {
         return selectedYear
     }
-    private val monthNamesList: Array<String> = resources.getStringArray(R.array.month_names)
-    private val monthShortNamesList: Array<String> = resources.getStringArray(R.array.month_short_names)
+    private val monthEngNamesList: Array<String> = resources.getStringArray(R.array.month_names_en)
+    private val monthRusNamesList: Array<String> = resources.getStringArray(R.array.month_names_rus)
+    private val monthShortEngNamesList: Array<String> = resources.getStringArray(R.array.month_short_names_en)
+    private val monthShortRusNamesList: Array<String> = resources.getStringArray(R.array.month_short_names_rus)
     private var monthChangeListener: DataChangeListener? = null
     private val indexOfEndWeekDayNames = 6
+    private var indexOfEndDayPrevMonth = 0
     private var indexOfCurrentDay = 0
     private var calendarIsCollapsed = false
     fun setMonthChangeListener(listener: DataChangeListener) {
@@ -110,9 +113,9 @@ class CalendarView : LinearLayout {
                                     selectedMonth += 1
                                 }
                             }
-                            notifyMonthChanged(getSelectedMonthAsStr(), getSelectedYearAsStr())
+                            fillCalendarWithMonth(selectedYear, selectedMonth)
 
-                            //fillCalendarWithMonth(selectedYear, selectedMonth, listOf())
+                            notifyMonthChanged(getSelectedMonthAsStr(), getSelectedYearAsStr())
                         }
                         return super.onFling(e1, e2, velocityX, velocityY)
                     }
@@ -139,21 +142,19 @@ class CalendarView : LinearLayout {
     }
 
     @SuppressLint("SetTextI18n")
-    fun fillCalendarWithMonth(year: Int, month: Int, numsList: List<Int> = listOf()) {
-        currentDateView.text = "${monthNamesList[month - 1]} $year"
+    fun fillCalendarWithMonth(year: Int, month: Int) {
+        currentDateView.text = "${monthEngNamesList[month - 1]} $year"
         currentDateView.setTextColor(ContextCompat.getColor(context, R.color.white))
 
         if (calendarIsCollapsed) {
             dateGrid.removeViews(7, 7)
             calendarIsCollapsed = false
-        } else {
-            numsOfDaysWithScheduleList = numsList
         }
 
         // Первый диапазон дней из предыдущего месяца, поэтому изначальный цвет чисел серый
         var isGray = true
         // Первые 7 ячеек заняты названиями дней недели
-        var indexOfEndDayPrevMonth = indexOfEndWeekDayNames
+        indexOfEndDayPrevMonth = indexOfEndWeekDayNames
         var indexOfFirstDayNextMonth = 0
         for (typeOfDays in 1..3) {
             daysOfMonth = computeDaysInCalendar(year, month, typeOfDays)
@@ -182,9 +183,6 @@ class CalendarView : LinearLayout {
                     setDayStyles(day, dayNum, params)
                     day.setTextColor(ContextCompat.getColor(context, R.color.white))
 
-                    if (dayNum in numsOfDaysWithScheduleList) {
-                        day.setBackgroundColor(R.drawable.underline_grid_item)
-                    }
                     dateGrid.addView(day, params)
                 }
                 isGray = true
@@ -212,6 +210,11 @@ class CalendarView : LinearLayout {
             dateGrid.removeViewAt(indexOfCurrentDay)
             dateGrid.addView(day, indexOfCurrentDay)
         }
+        // если был свёрнут
+        /*if (calendarIsCollapsed) {
+            setupDaysWithSchedules(numsOfDaysWithScheduleList)
+            calendarIsCollapsed = false
+        }*/
     }
 
     fun fillCalendarWithWeek() {
@@ -241,6 +244,24 @@ class CalendarView : LinearLayout {
         calendarIsCollapsed = true
     }
 
+    fun setupDaysWithSchedules(listNums: List<Int> = numsOfDaysWithScheduleList) {
+        numsOfDaysWithScheduleList = listNums
+        numsOfDaysWithScheduleList.forEach {dayNum ->
+            val indexOfDay = indexOfEndDayPrevMonth + dayNum
+            val dayView = dateGrid.getChildAt(indexOfDay) as TextView
+            dayView.setBackgroundColor(R.drawable.underline_grid_item)
+            /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                dayView.setTextAppearance(R.style.UnderlineTextView)
+            } else {
+                @Suppress("DEPRECATION")
+                dayView.setTextAppearance(context, R.style.UnderlineTextView)
+            }*/
+
+            dateGrid.removeViewAt(indexOfDay)
+            dateGrid.addView(dayView, indexOfDay)
+        }
+
+    }
     interface DataChangeListener {
         fun onDataChanged(selectedMonth: String, selectedYear: String)
     }

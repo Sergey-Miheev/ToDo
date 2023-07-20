@@ -13,7 +13,7 @@
         app:backgroundTint="@color/blue_purple"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:sdMainFabClosedSrc="@drawable/add"
+        app:sdMainFabClosedSrc="@drawable/icon_add"
         app:sdMainFabClosedBackgroundColor="@color/blue_purple"
         app:sdMainFabOpenedBackgroundColor="@color/blue_purple"/>
 

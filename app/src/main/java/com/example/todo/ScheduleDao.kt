@@ -20,6 +20,6 @@ interface ScheduleDao {
     fun getScheduleById(idSchedule: Int): Flow<ScheduleModel>
     @Query("SELECT * FROM schedule")
     fun getAllSchedules(): Flow<List<ScheduleModel>>
-    @Query("SELECT * FROM schedule WHERE startDateTime LIKE '%' || :monthAndYear || '%'")
+    @Query("SELECT * FROM schedule WHERE startDateTime LIKE '%' || :monthAndYear || '%' ORDER BY isClosed DESC, startDateTime DESC")
     fun getMonthSchedules(monthAndYear: String): Flow<List<ScheduleModel>>
 }

@@ -2,6 +2,7 @@ package com.example.todo
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
@@ -17,11 +18,14 @@ class NoteActivity : AppCompatActivity() {
     private fun initViews() {
         val arguments = intent.extras
 
+        val pinIcon = binding.noteEditToolbarPinIcon
+        val pinIconSmall = binding.noteEditToolbarPinIconSmall
+
         if (arguments != null) {
             val noteId: Int = arguments.getInt("noteId")
 
-            val titleView: EditText = findViewById(R.id.edit_note_title)
-            val descriptionView: EditText = findViewById(R.id.edit_note_description)
+            val titleView: EditText = binding.editNoteTitle
+            val descriptionView: EditText = binding.editNoteDescription
             descriptionView.setText("")
             titleView.setText("")
 
@@ -31,11 +35,32 @@ class NoteActivity : AppCompatActivity() {
 
                     descriptionView.setText(note.description)
                     titleView.setText(note.title)
+                    // Если заметка закреплена, то внутреннюю(меньшую) иконку цвета фона экрана делаем невидимой
+                    if (note.pinned) {
+                        pinIconSmall.visibility = View.INVISIBLE
+                    }
                 }
+            }
+        }
+
+        pinIcon.setOnClickListener {
+            if (note.pinned) {
+                pinIconSmall.visibility = View.VISIBLE
+                note.pinned = false
+            } else {
+                pinIconSmall.visibility = View.INVISIBLE
+                note.pinned = true
             }
         }
     }
 
+    private fun initMenu() {
+        val toolbarMenu = binding.noteMenu
+        toolbarMenu.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,6 +70,8 @@ class NoteActivity : AppCompatActivity() {
         noteDao = MainDb.getDb(this).getNoteDao()
 
         initViews()
+
+        initMenu()
 
         binding.saveNoteFab.setOnClickListener {
             if (note.id != null) {
@@ -61,6 +88,7 @@ class NoteActivity : AppCompatActivity() {
             }
 
             val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("isNotes", true)
             startActivity(intent)
         }
     }

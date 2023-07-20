@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="UnderlineTextView" parent="Theme.ToDo">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/underline_grid_item</item>
+    </style>
+</resources>

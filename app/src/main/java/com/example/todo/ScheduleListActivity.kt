@@ -21,7 +21,7 @@ class ScheduleListActivity : AppCompatActivity() {
     private fun getDaysNumFromListSchedules(schedulesList: List<ScheduleModel>): List<Int> {
         val numsOfList: ArrayList<Int> = ArrayList()
         schedulesList.forEach {schedule ->
-            numsOfList.add(schedule.startDateTime.substring(5,7).toInt())
+            numsOfList.add(schedule.startDateTime.substring(4,6).toInt())
         }
 
         return numsOfList.toList()
@@ -36,20 +36,14 @@ class ScheduleListActivity : AppCompatActivity() {
                     intent.putExtra("idSchedule", scheduleItem.id)
                     startActivity(intent)
                 }
-                binding.calendarView.fillCalendarWithMonth(
-                    binding.calendarView.getSelectedYearAsInt(),
-                    binding.calendarView.getSelectedMonthAsInt(),
-                    getDaysNumFromListSchedules(schedulesList)
-                )
+
+                binding.calendarView.setupDaysWithSchedules(getDaysNumFromListSchedules(schedulesList))
 
                 if (dbSchedulesList.isEmpty()) {
                     binding.schuduleListMissingMsg.visibility = View.VISIBLE
-                    binding.scheduleListView.visibility = View.GONE
                 } else {
                     binding.schuduleListMissingMsg.visibility = View.GONE
-                    binding.scheduleListView.visibility = View.VISIBLE
                 }
-
                 binding.scheduleListView.adapter = schedulesListAdapter
             }
     }
@@ -82,6 +76,10 @@ class ScheduleListActivity : AppCompatActivity() {
                                 binding.calendarView.getSelectedYearAsInt(),
                                 binding.calendarView.getSelectedMonthAsInt()
                             )
+                            // если был свёрнут
+                            if (!listIsCollapsed) {
+                                binding.calendarView.setupDaysWithSchedules()
+                            }
                             listIsCollapsed = true
                         }
                     } else if (verticalScrollOffset > 0) {

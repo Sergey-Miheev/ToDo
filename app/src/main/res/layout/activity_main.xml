@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
+    android:background="@drawable/bg_gradient"
     android:focusableInTouchMode="true"
     tools:context=".MainActivity">
 
@@ -28,7 +28,7 @@
         android:layout_margin="15dp"
         app:queryHint="Search Note"
         app:iconifiedByDefault="false"
-        app:searchIcon="@drawable/search_icon"
+        app:searchIcon="@drawable/icon_search"
         android:background="@drawable/bg_search_note_view"
         />
 
