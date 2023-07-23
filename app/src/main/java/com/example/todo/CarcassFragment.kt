@@ -25,6 +25,7 @@ class CarcassFragment : Fragment() {
     private var param2: String? = null
     private lateinit var switchButton: SwitchCompat
     private lateinit var toolbarMenu: ImageView
+    private lateinit var notificationIcon: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,9 +56,16 @@ class CarcassFragment : Fragment() {
         }
     }
 
-    private fun initToolbarMenu() {
+    private fun setupToolbarMenu() {
         toolbarMenu.setOnClickListener {
             val intent = Intent(context, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun setupNotificationIcon() {
+        notificationIcon.setOnClickListener {
+            val intent = Intent(context, NotificationList::class.java)
             startActivity(intent)
         }
     }
@@ -72,9 +80,10 @@ class CarcassFragment : Fragment() {
         initSwitchButton()
 
         toolbarMenu = view.findViewById(R.id.toolbar_menuIcon)
+        setupToolbarMenu()
 
-        initToolbarMenu()
-
+        notificationIcon = view.findViewById(R.id.toolbar_notificationsIcon)
+        setupNotificationIcon()
         // Inflate the layout for this fragment
         return view
     }

@@ -2,8 +2,10 @@ package com.example.todo
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.asLiveData
 import com.example.todo.databinding.ActivityNoteBinding
@@ -61,6 +63,42 @@ class NoteActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+/*
+<com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/saveNoteFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_margin="10dp"
+        android:contentDescription="@string/save_note"
+        android:backgroundTint="@color/teal_200"
+        android:src="@drawable/icon_save"/>
+ */
+    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
+        if (event?.keyCode == KeyEvent.KEYCODE_BACK) {
+            note.title = binding.editNoteTitle.text.toString()
+            note.description = binding.editNoteDescription.text.toString()
+            note.date = Date()
+            if (note.title == "" && note.description == "") {
+                val toast = Toast.makeText(this, "Note is empty!", Toast.LENGTH_LONG)
+                toast.show()
+            } else {
+                if (note.id != null) {
+                    Thread {
+                        noteDao.updateNote(note)
+                    }.start()
+                } else {
+                    Thread {
+                        noteDao.insertNote(note)
+                    }.start()
+                }
+                finish()
+            }
+        }
+        return super.dispatchKeyEvent(event)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,23 +111,25 @@ class NoteActivity : AppCompatActivity() {
 
         initMenu()
 
-        binding.saveNoteFab.setOnClickListener {
-            if (note.id != null) {
-                Thread {
-                    noteDao.updateNote(note)
-                }.start()
+        /*binding.saveNoteFab.setOnClickListener {
+            note.title = binding.editNoteTitle.text.toString()
+            note.description = binding.editNoteDescription.text.toString()
+            note.date = Date()
+            if (note.title == "" && note.description == "") {
+                val toast = Toast.makeText(this, "Note is empty!", Toast.LENGTH_LONG)
+                toast.show()
             } else {
-                note.title = binding.editNoteTitle.text.toString()
-                note.description = binding.editNoteDescription.text.toString()
-                note.date = Date()
-                Thread {
-                    noteDao.insertNote(note)
-                }.start()
+                if (note.id != null) {
+                    Thread {
+                        noteDao.updateNote(note)
+                    }.start()
+                } else {
+                    Thread {
+                        noteDao.insertNote(note)
+                    }.start()
+                }
+                finish()
             }
-
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("isNotes", true)
-            startActivity(intent)
-        }
+        }*/
     }
 }

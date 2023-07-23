@@ -47,10 +47,10 @@ class CalendarView : LinearLayout {
     fun getSelectedYearAsInt(): Int {
         return selectedYear
     }
-    private val monthEngNamesList: Array<String> = resources.getStringArray(R.array.month_names_en)
-    private val monthRusNamesList: Array<String> = resources.getStringArray(R.array.month_names_rus)
-    private val monthShortEngNamesList: Array<String> = resources.getStringArray(R.array.month_short_names_en)
-    private val monthShortRusNamesList: Array<String> = resources.getStringArray(R.array.month_short_names_rus)
+    private val monthEngNamesList: Array<String> = resources.getStringArray(R.array.month_names)
+    private val monthRusNamesList: Array<String> = resources.getStringArray(R.array.month_names)
+    private val monthShortEngNamesList: Array<String> = resources.getStringArray(R.array.month_short_names)
+    private val monthShortRusNamesList: Array<String> = resources.getStringArray(R.array.month_short_names)
     private var monthChangeListener: DataChangeListener? = null
     private val indexOfEndWeekDayNames = 6
     private var indexOfEndDayPrevMonth = 0
@@ -248,8 +248,19 @@ class CalendarView : LinearLayout {
         numsOfDaysWithScheduleList = listNums
         numsOfDaysWithScheduleList.forEach {dayNum ->
             val indexOfDay = indexOfEndDayPrevMonth + dayNum
-            val dayView = dateGrid.getChildAt(indexOfDay) as TextView
-            dayView.setBackgroundColor(R.drawable.underline_grid_item)
+            if (calendarIsCollapsed) {
+                if (indexOfDay < 20) {
+                    val dayView = dateGrid.getChildAt(indexOfDay) as TextView
+                    dayView.setBackgroundColor(R.drawable.underline_grid_item)
+                    dateGrid.removeViewAt(indexOfDay)
+                    dateGrid.addView(dayView, indexOfDay)
+                }
+            } else {
+                val dayView = dateGrid.getChildAt(indexOfDay) as TextView
+                dayView.setBackgroundColor(R.drawable.underline_grid_item)
+                dateGrid.removeViewAt(indexOfDay)
+                dateGrid.addView(dayView, indexOfDay)
+            }
             /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 dayView.setTextAppearance(R.style.UnderlineTextView)
             } else {
@@ -257,8 +268,7 @@ class CalendarView : LinearLayout {
                 dayView.setTextAppearance(context, R.style.UnderlineTextView)
             }*/
 
-            dateGrid.removeViewAt(indexOfDay)
-            dateGrid.addView(dayView, indexOfDay)
+
         }
 
     }

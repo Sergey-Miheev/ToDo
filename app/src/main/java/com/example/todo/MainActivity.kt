@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var dbDao: NoteDao
 
-    private fun getNotesList() {
+    private fun setupNotesList() {
 
         dbDao.getAllNotes().asLiveData().observe(this) { dbNotesList ->
             notesList = ArrayList(dbNotesList)
@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                 // below line is to display our snack-bar with action.
                 Snackbar.make(
                     notesRecyclerView!!,
-                    "Deleted " + deletedNote.title,
+                    "Deleted " + if (deletedNote.title != "") (deletedNote.title) else ("anonymous"),
                     Snackbar.LENGTH_LONG
                 )
                     .setDuration(durationUndoPossibility)
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
 
         dbDao = MainDb.getDb(this).getNoteDao()
 
-        getNotesList()
+        setupNotesList()
 
         // on below line we are creating a method to create item touch helper
         // method for adding swipe to delete functionality.

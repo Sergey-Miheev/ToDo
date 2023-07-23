@@ -2,7 +2,6 @@ package com.example.todo
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -13,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.asLiveData
 import com.example.todo.databinding.ActivityScheduleBinding
@@ -105,18 +105,24 @@ class ScheduleActivity : AppCompatActivity() {
             schedule.reminder = binding.reminderSpinner.selectedItemPosition.toByte()
             schedule.place = binding.placeEdit.text.toString()
             schedule.notes = binding.descriptionEdit.text.toString()
-            if (schedule.id == null) {
-                Thread {
-                    scheduleDao.insertSchedule(schedule)
-                }.start()
+            if (schedule.title == ""
+                && schedule.place == ""
+                && schedule.notes == ""
+            ) {
+                val toast = Toast.makeText(this, "Schedule is empty!", Toast.LENGTH_LONG)
+                toast.show()
             } else {
-                Thread {
-                    scheduleDao.updateSchedule(schedule)
-                }.start()
+                if (schedule.id == null) {
+                    Thread {
+                        scheduleDao.insertSchedule(schedule)
+                    }.start()
+                } else {
+                    Thread {
+                        scheduleDao.updateSchedule(schedule)
+                    }.start()
+                }
+                finish()
             }
-
-            val intent = Intent(this, ScheduleListActivity::class.java)
-            startActivity(intent)
         }
     }
 

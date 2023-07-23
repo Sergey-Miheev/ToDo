@@ -5,14 +5,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.asLiveData
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todo.databinding.ActivityScheduleListBinding
+import com.google.android.material.snackbar.Snackbar
 import models.ScheduleModel
+import java.util.Timer
+import kotlin.concurrent.timerTask
 
 class ScheduleListActivity : AppCompatActivity() {
 
-    private lateinit var schedulesList: List<ScheduleModel>
+    private lateinit var schedulesList: ArrayList<ScheduleModel>
     private lateinit var schedulesListAdapter: ScheduleAdapter
     private lateinit var scheduleDao: ScheduleDao
     private lateinit var binding: ActivityScheduleListBinding
@@ -20,16 +24,17 @@ class ScheduleListActivity : AppCompatActivity() {
 
     private fun getDaysNumFromListSchedules(schedulesList: List<ScheduleModel>): List<Int> {
         val numsOfList: ArrayList<Int> = ArrayList()
-        schedulesList.forEach {schedule ->
-            numsOfList.add(schedule.startDateTime.substring(4,6).toInt())
+        schedulesList.forEach { schedule ->
+            numsOfList.add(schedule.startDateTime.substring(4, 6).toInt())
         }
 
         return numsOfList.toList()
     }
+
     private fun getScheduleListFromDb(selectedMonth: String, selectedYear: String) {
         scheduleDao.getMonthSchedules("$selectedMonth $selectedYear").asLiveData()
             .observe(this@ScheduleListActivity) { dbSchedulesList ->
-                schedulesList = dbSchedulesList
+                schedulesList = ArrayList(dbSchedulesList)
                 schedulesListAdapter = ScheduleAdapter(this, schedulesList)
                 schedulesListAdapter.onItemClick = { scheduleItem ->
                     val intent = Intent(this, ScheduleActivity::class.java)
@@ -37,7 +42,11 @@ class ScheduleListActivity : AppCompatActivity() {
                     startActivity(intent)
                 }
 
-                binding.calendarView.setupDaysWithSchedules(getDaysNumFromListSchedules(schedulesList))
+                binding.calendarView.setupDaysWithSchedules(
+                    getDaysNumFromListSchedules(
+                        schedulesList
+                    )
+                )
 
                 if (dbSchedulesList.isEmpty()) {
                     binding.schuduleListMissingMsg.visibility = View.VISIBLE
@@ -93,7 +102,7 @@ class ScheduleListActivity : AppCompatActivity() {
             }
         })
 
-        /*ItemTouchHelper(object: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -104,12 +113,48 @@ class ScheduleListActivity : AppCompatActivity() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val durationUndoPossibility = 3000
-
                 val position = viewHolder.adapterPosition
+                val deletedSchedule = schedulesList[position]
 
-                val deletedSchedule
+                // this method is called when item is swiped.
+                // below line is to remove item from our array list.
+                schedulesList.removeAt(position)
+
+                // below line is to notify our item is removed from adapter.
+                schedulesListAdapter.notifyItemRemoved(position)
+
+                var scheduleIsDeleted = true
+
+                // below line is to display our snack-bar with action.
+                Snackbar.make(
+                    binding.scheduleListView,
+                    "Deleted " + if (deletedSchedule.title != "") (deletedSchedule.title) else ("anonymous"),
+                    Snackbar.LENGTH_LONG
+                )
+                    .setDuration(durationUndoPossibility)
+                    .setAction(
+                        "Undo"
+                    ) {
+                        // adding on click listener to our action of snack bar.
+                        // below line is to add our item to array list with a position.
+                        schedulesList.add(position, deletedSchedule)
+
+                        // below line is to notify item is
+                        // added to our adapter class.
+                        schedulesListAdapter.notifyItemInserted(position)
+
+                        scheduleIsDeleted = false
+                    }.show()
+
+                Timer().schedule(timerTask {
+                    if (scheduleIsDeleted) {
+                        Thread {
+                            scheduleDao.deleteSchedule(deletedSchedule)
+                        }.start()
+                    }
+                }, durationUndoPossibility.toLong())
             }
-        })*/
+        }).attachToRecyclerView(binding.scheduleListView)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

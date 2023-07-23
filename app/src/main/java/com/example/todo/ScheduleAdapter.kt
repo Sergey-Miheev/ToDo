@@ -7,7 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import models.ScheduleModel
 
-class ScheduleAdapter(private val context: Context,inputSchedulesList: List<ScheduleModel>): RecyclerView.Adapter<ScheduleViewHolder>() {
+class ScheduleAdapter(private val context: Context, inputSchedulesList: List<ScheduleModel>): RecyclerView.Adapter<ScheduleViewHolder>() {
     private var schedulesList = ArrayList(inputSchedulesList)
     var onItemClick: ((ScheduleModel) -> Unit)? = null
 

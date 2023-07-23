@@ -111,15 +111,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/saveNoteFab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_margin="10dp"
-        android:contentDescription="@string/save_note"
-        android:backgroundTint="@color/teal_200"
-        android:src="@drawable/icon_save"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
